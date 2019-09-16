@@ -1,2 +1,4 @@
-build
 .vscode
+
+build
+external_libs
