@@ -12,11 +12,15 @@ project(seq-parser VERSION 0.1.0
 # locations on all platforms.
 include(GNUInstallDirs)
 
-message("Add apps")
-add_subdirectory(apps)
+message("Add external")
+add_subdirectory(external EXCLUDE_FROM_ALL)
 
 message("Add src")
 add_subdirectory(src)
+
+message("Add apps")
+add_subdirectory(apps)
+
 # target_include_directories(seqparser
 #     PUBLIC 
 #         $<INSTALL_INTERFACE:include>    
