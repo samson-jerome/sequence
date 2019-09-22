@@ -21,6 +21,10 @@ add_subdirectory(src)
 message("Add apps")
 add_subdirectory(apps)
 
+target_link_libraries(seqparser
+    PRIVATE # fmt is only needed to build, not to use this library
+        fmt::fmt # Use the namespaced version to make sure we have the target and not the static lib only
+)
 # target_include_directories(seqparser
 #     PUBLIC 
 #         $<INSTALL_INTERFACE:include>    
