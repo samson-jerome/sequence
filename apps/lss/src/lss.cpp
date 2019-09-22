@@ -1,6 +1,9 @@
 #include <iostream>
 #include "seqparser.h"
+#include <boost/filesystem.hpp>
 
+using namespace std;
+using namespace boost::filesystem;
 
 int main(int argc, char** argv)
 {
