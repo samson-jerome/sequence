@@ -1,7 +1,9 @@
-#include "seqparser.h"
+
 #include "collection.h"
+#include "seqparser.h"
 
 using namespace std;
+using namespace boost::filesystem;
 
 int give_me_one() {
     Range r;
@@ -14,6 +16,21 @@ SequenceParser::SequenceParser() {
     cout << "SequenceParser" << endl;
 }
 
+void SequenceParser::assemble(directory_iterator d, vector<Collection>* collections, vector<std::string>* remainders) {
+    cout << "SequenceParser::assemble (iterator)" << endl;
+}
+
+void SequenceParser::assemble(vector<string> entries, vector<Collection>* collections, vector<std::string>* remainders) {
+    cout << "SequenceParser::assemble (vector of entries)" << endl;
+}
+
+std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<string> entries) {
+    cout << "tuple of collection and remainders > SequenceParser::assemble (vector of entries)" << endl;
+    vector<Collection> collections;
+    vector<string> remainders;
+
+    return make_tuple(collections, remainders);
+}
 // void FileParser::assemble(QStringList entries, std::vector<Collection>* collections, std::vector<std::string>* remainders) {
 // }
 

@@ -21,8 +21,8 @@ target_include_directories(seqparser
 # # This depends on (header only) boost
 # target_link_libraries(modern_library PRIVATE Boost::boost)
 
-# # All users of this library will need at least C++11
-# target_compile_features(modern_library PUBLIC cxx_std_11)
+# All users of this library will need at least C++17
+# target_compile_features(seqparser PUBLIC cxx_std_17)
 
 # # IDEs should put the headers in a nice place
 # source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})
