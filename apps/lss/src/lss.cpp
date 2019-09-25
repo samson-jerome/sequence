@@ -2,6 +2,8 @@
 #include "seqparser.h"
 #include <boost/filesystem.hpp>
 
+#include "collection.h"
+
 using namespace std;
 using namespace boost::filesystem;
 
@@ -63,8 +65,8 @@ int main(int argc, char** argv)
 
             std::sort(entries.begin(), entries.end());
 
-            for (auto&& i : entries)
-                cout << "    " << i << '\n'; 
+            // for (auto&& i : entries)
+            //     cout << "    " << i << '\n'; 
 
             // for (directory_entry& x : directory_iterator(p))
             //     cout << "    " << x.path() << '\n'; 
@@ -73,6 +75,9 @@ int main(int argc, char** argv)
             vector<string> remainders;
 
             tie(collections, remainders) = SequenceParser::assemble(entries);
+
+            cout << "Found collections: " << collections.size() << endl;
+            cout << "Found remainders: " << remainders.size() << endl;
 
             // auto[collections, remainders] = SequenceParser::assemble(entries);
         }
