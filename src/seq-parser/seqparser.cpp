@@ -41,21 +41,27 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     // Handle negative frames
     // QRegularExpression re("(?<index>-*\\d+)(?<tail>\\D+)$");
     // QRegularExpressionMatch match;
+    // string fnames[] = {"aaa11.txt", "bar12.txt", "zoid452berg"};
+    // // regex txt_regex("[a-z]+\\.txt");
+    // regex txt_regex(".*(\\d+?)\\.txt");
+    // for (const auto &fname : fnames) {
+    //     std::cout << fname << ": " << regex_match(fname, txt_regex) << '\n';
+
+    // }
 
     // const regex re("(?<index>-*\\d+)(?<tail>\\D+)$"); 
-    const regex re("(-*\\d+?)(\\D+?)$"); 
+    regex re(".*(-*\\d+?)(\\D*?)$"); 
     smatch match; 
   
     // QMultiHash<QString, int> collectHash;
     // QString head, tail, index, hash;
 
-    for (int i = 0; i < entries.size()-100; ++i) {
-
-        cout << "- entry: " << entries.at(i) << endl;
-    
+    for (int i = 0; i < entries.size()-450; ++i) {
+        
+        cout << "- entry: " << entries.at(i) << endl;    
 
         if (regex_match(entries.at(i), match, re)) {
-            cout << entries.at(i) << endl;
+            cout << "   - matches: " << match.size() << endl;
             for (size_t i = 0; i < match.size(); ++i) {
                 ssub_match sub_match = match[i];
                 string piece = sub_match.str();
