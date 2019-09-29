@@ -55,26 +55,76 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     smatch match; 
   
     // QMultiHash<QString, int> collectHash;
-    //collectHash;
+
     string head, tail, index, hash;
+    set<string> keys;
+    unordered_multimap<string, int> collectHash;
+    typedef unordered_multimap<string, int>::iterator collectIt;
+    typedef set<string>::iterator keysIt;
 
     for (int i = 0; i < entries.size(); ++i) {
         
-        cout << "- entry: " << entries.at(i) << endl;    
+        // cout << "- entry: " << entries.at(i) << endl;    
 
         if (regex_search(entries.at(i), match, re) && match.size() > 1) {
-            cout << "   - matches: " << match.size();
+            // cout << "   - matches: " << match.size();
             
             head = entries.at(i).substr(0, match.position(0));
             index = match.str(1);
             tail = match.str(2);
             hash = tail + "|" + head;  // convention to store unicity of a sequence
+            keys.insert(hash);
+            // cout << " -- \"" << index << "\", \"" << tail << "\", \"" << hash << "\"" << endl;
 
-            cout << " -- \"" << index << "\", \"" << tail << "\", \"" << hash << "\"" << endl;
-
+            // Limit size of int, sequence can't have more than ~2B frame
+            // as a global range
+            collectHash.insert(make_pair(hash, stoi(index)));
+            if(i < 20){
+                std::cout << (entries.at(i)) << " --> " \
+                    << (hash) << " / " \
+                    << (head) << " / " \
+                    << (index) << " / " \
+                    << (tail) << std::endl;
+            }
+            else{
+                if(i == 21) std::cout << "..." << std::endl;
+            }            
         }
-        break;
+        else {
+            remainders.push_back(entries.at(i));
+            cout << entries.at(i) << " --> remainders" << endl;
+        }
     }
+
+    // vector<string> keys = collectHash.uniqueKeys();
+    cout << "Unique keys:" << endl;
+    for (keysIt it=keys.begin(); it!=keys.end(); ++it)
+    {
+        std::cout << ' ' << *it;
+    }
+
+    // for (QStringList::Iterator it = keys.begin(); it != keys.end(); it++)
+    // {
+    //     QStringList splits = it->split('|');
+    //     QList<int> indexes = collectHash.values(*it);
+
+    //     // Identify hash entries with a single index to handle as a remainder instead of collection
+    //     if (indexes.count()==1) {
+    //         auto singleFile = splits.at(1) + QString::number(indexes[0]) + splits.at(0);
+    //         remainders.append(singleFile);
+    //         continue;
+    //     }
+
+    //     // Create the collection for the current hash key
+    //     qSort(indexes);
+    //     Collection currentCollection( 
+    //         splits.at(1).toLocal8Bit().constData(), 
+    //         splits.at(0).toLocal8Bit().constData(), 
+    //         indexes.toVector().toStdVector()
+    //     );
+
+    //     collections.append(currentCollection);
+    // } 
 
     //     // match = re.match(entries.at(i));
     //     if (match.hasMatch()) {

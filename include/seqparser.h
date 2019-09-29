@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
+#include <unordered_map> 
 #include <regex>
 
 #include <boost/filesystem.hpp>
