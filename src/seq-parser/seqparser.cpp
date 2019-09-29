@@ -50,24 +50,30 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     // }
 
     // const regex re("(?<index>-*\\d+)(?<tail>\\D+)$"); 
-    regex re(".*(-*\\d+?)(\\D*?)$"); 
+    regex re("(-*\\d+)(\\D*)$"); 
+
     smatch match; 
   
     // QMultiHash<QString, int> collectHash;
-    // QString head, tail, index, hash;
+    //collectHash;
+    string head, tail, index, hash;
 
-    for (int i = 0; i < entries.size()-450; ++i) {
+    for (int i = 0; i < entries.size(); ++i) {
         
         cout << "- entry: " << entries.at(i) << endl;    
 
-        if (regex_match(entries.at(i), match, re)) {
-            cout << "   - matches: " << match.size() << endl;
-            for (size_t i = 0; i < match.size(); ++i) {
-                ssub_match sub_match = match[i];
-                string piece = sub_match.str();
-                cout << "  submatch " << i << ": " << piece << endl;
-            }   
-        }   
+        if (regex_search(entries.at(i), match, re) && match.size() > 1) {
+            cout << "   - matches: " << match.size();
+            
+            head = entries.at(i).substr(0, match.position(0));
+            index = match.str(1);
+            tail = match.str(2);
+            hash = tail + "|" + head;  // convention to store unicity of a sequence
+
+            cout << " -- \"" << index << "\", \"" << tail << "\", \"" << hash << "\"" << endl;
+
+        }
+        break;
     }
 
     //     // match = re.match(entries.at(i));
