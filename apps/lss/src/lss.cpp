@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     // std::string folder = "/home/jerome/workspace/dev/samples/sequences/candlesmoke-exr";
     // QDir mydir(QString::fromStdString(folder));
     // filesystem.path mypath()
-    path p("/home/jerome/workspace/dev/samples/sequences/candlesmoke-exr");
+    path p("/home/jer/workspace/dev/samples/sequences/candlesmoke-exr");
     cout << "given path: " << p << endl;
     // try
     // {

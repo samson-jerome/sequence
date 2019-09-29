@@ -8,6 +8,8 @@
 #include <regex>
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 #include "collection.h"
 

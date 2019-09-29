@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace boost::filesystem;
+using namespace boost::algorithm;
 
 int give_me_one() {
     Range r;
@@ -73,8 +74,7 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
             index = match.str(1);
             tail = match.str(2);
             hash = tail + "|" + head;  // convention to store unicity of a sequence
-            keys.insert(hash);
-            // cout << " -- \"" << index << "\", \"" << tail << "\", \"" << hash << "\"" << endl;
+            keys.insert(hash); // should we tets existence here ?
 
             // Limit size of int, sequence can't have more than ~2B frame
             // as a global range
@@ -101,30 +101,32 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     for (keysIt it=keys.begin(); it!=keys.end(); ++it)
     {
         std::cout << ' ' << *it;
+        // QStringList splits = it->split('|');
+        vector<string> splits;
+        string delims = "|";
+        boost::split(splits, *it, boost::is_any_of(delims));
+        cout << "-- splits:" << splits.at(0) << endl;
+        // QList<int> indexes = collectHash.values(*it);
+
+        // Identify hash entries with a single index to handle as a remainder instead of collection
+        // if (indexes.count()==1) {
+        //     auto singleFile = splits.at(1) + QString::number(indexes[0]) + splits.at(0);
+        //     remainders.append(singleFile);
+        //     continue;
+        // }
+
+        // // Create the collection for the current hash key
+        // qSort(indexes);
+        // Collection currentCollection( 
+        //     splits.at(1).toLocal8Bit().constData(), 
+        //     splits.at(0).toLocal8Bit().constData(), 
+        //     indexes.toVector().toStdVector()
+        // );
+
+        // collections.append(currentCollection);
+    
     }
 
-    // for (QStringList::Iterator it = keys.begin(); it != keys.end(); it++)
-    // {
-    //     QStringList splits = it->split('|');
-    //     QList<int> indexes = collectHash.values(*it);
-
-    //     // Identify hash entries with a single index to handle as a remainder instead of collection
-    //     if (indexes.count()==1) {
-    //         auto singleFile = splits.at(1) + QString::number(indexes[0]) + splits.at(0);
-    //         remainders.append(singleFile);
-    //         continue;
-    //     }
-
-    //     // Create the collection for the current hash key
-    //     qSort(indexes);
-    //     Collection currentCollection( 
-    //         splits.at(1).toLocal8Bit().constData(), 
-    //         splits.at(0).toLocal8Bit().constData(), 
-    //         indexes.toVector().toStdVector()
-    //     );
-
-    //     collections.append(currentCollection);
-    // } 
 
     //     // match = re.match(entries.at(i));
     //     if (match.hasMatch()) {
