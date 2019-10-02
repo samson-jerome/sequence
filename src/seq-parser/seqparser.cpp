@@ -67,46 +67,43 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
             // Limit size of int, sequence can't have more than ~2B frame
             // as a global range
             collections_ummap.insert(make_pair(hash, stoi(index)));
-            if(i < 20){
-                std::cout << (entries.at(i)) << " --> " \
-                    << (hash) << " / " \
-                    << (head) << " / " \
-                    << (index) << " / " \
-                    << (tail) << std::endl;
-            }
-            else{
-                if(i == 21) std::cout << "..." << std::endl;
-            }            
+            // if(i < 20){
+            //     std::cout << (entries.at(i)) << " --> " \
+            //         << (hash) << " / " \
+            //         << (head) << " / " \
+            //         << (index) << " / " \
+            //         << (tail) << std::endl;
+            // }
+            // else{
+            //     if(i == 21) std::cout << "..." << std::endl;
+            // }            
         }
         else {
             remainders.push_back(entries.at(i));
-            cout << entries.at(i) << " --> remainders" << endl;
+            // cout << entries.at(i) << " --> remainders" << endl;
         }
     }
 
     cout << "Sequence unique keys:" << endl;
+    vector<string> splits;
+    vector<int> indexes;
+    string delims = "|";
     for (keysIt key=keys.begin(); key!=keys.end(); ++key)
     {
         cout << *key;
-        // QStringList splits = it->split('|');
-        vector<string> splits;
-        string delims = "|";
         boost::split(splits, *key, boost::is_any_of(delims));
     
-        vector<int> indexes;
+
+        // Collect indexes for current hash key i.e. current sequence
+        indexes.clear();
         pair<ummap_it, ummap_it> result = collections_ummap.equal_range(*key);
-
-        // Iterate over the range
-        for (ummap_it it = result.first; it != result.second; it++)
-            cout << "  - " << it->second << endl;
-    
-        // Total Elements in the range
-        int count = distance(result.first, result.second);
-        cout << "Total values " << *key <<" are : " << count << endl;
-
+        for (ummap_it it = result.first; it != result.second; it++) {
+            indexes.push_back(it->second);
+        }
+        sort(indexes.begin(), indexes.end());
 
         // Identify hash entries with a single index to handle as a remainder instead of collection
-        if (count==1) {
+        if (distance(result.first, result.second)==1) {
             // FIXME bug with zero padding indexes
             auto singleFile = splits.at(1) + std::to_string(indexes[0]) + splits.at(0);
             remainders.push_back(singleFile);
@@ -114,16 +111,13 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
         }
 
         // Create the collection for the current hash key
-        sort(indexes.begin(), indexes.end());
+        Collection currentCollection( 
+            splits.at(1), 
+            splits.at(0), 
+            indexes
+        );
 
-        // TOFIX copy constructor or smart pointer or ???
-        // Collection currentCollection( 
-        //     splits.at(1), 
-        //     splits.at(0), 
-        //     copy(indexes)
-        // );
-
-        // collections.append(currentCollection);
+        collections.push_back(currentCollection);
     
     }
 

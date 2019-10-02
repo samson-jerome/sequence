@@ -9,11 +9,9 @@ using namespace boost::filesystem;
 
 int main(int argc, char** argv)
 {
-    std::cout << "Yo" << std::endl; 
-    int res = give_me_one();
-    std::cout << "res = " << res << std::endl; 
 
-    SequenceParser s;
+    vector<Collection> collections;
+    vector<string> remainders;
 
     // std::string folder = "/home/jerome/workspace/dev/samples/sequences/test";
     // std::string folder = "/home/jerome/workspace/dev/samples/sequences/candlesmoke-exr";
@@ -21,65 +19,19 @@ int main(int argc, char** argv)
     // filesystem.path mypath()
     path p("/home/jer/workspace/dev/samples/sequences/test");
     cout << "given path: " << p << endl;
-    // try
-    // {
-    //     if (exists(p))
-    //     {
-    //         if (is_regular_file(p))
-    //             cout << p << " size is " << file_size(p) << '\n';
-
-    //         else if (is_directory(p))
-    //         {
-    //             cout << p << " is a directory containing:\n";
-
-    //             for (directory_entry& x : directory_iterator(p))
-    //                 cout << "    " << x.path() << '\n'; 
-    //         }
-    //         else
-    //             cout << p << " exists, but is not a regular file or directory\n";
-    //     }
-    //     else
-    //         cout << p << " does not exist\n";
-    // }
-
-    // catch (const filesystem_error& ex)
-    // {
-    //     cout << ex.what() << '\n';
-    // }
 
     try {
         if(exists(p) && is_directory(p)) {
-            // vector<path> entries;
             vector<string> entries;
-
-            // for (auto&& x : directory_iterator(p))
-            //     entries.push_back(x.path()); 
-
-            // std::sort(entries.begin(), entries.end());
-            
-            // for (auto&& x : entries)
-            //     v.push_back(x.filename().string());
 
             for (auto&& x : directory_iterator(p))
                 entries.push_back(x.path().filename().string()); 
 
-            std::sort(entries.begin(), entries.end());
-
-            // for (auto&& i : entries)
-            //     cout << "    " << i << '\n'; 
-
-            // for (directory_entry& x : directory_iterator(p))
-            //     cout << "    " << x.path() << '\n'; 
-
-            vector<Collection> collections;
-            vector<string> remainders;
-
+            sort(entries.begin(), entries.end());
             tie(collections, remainders) = SequenceParser::assemble(entries);
 
-            cout << "Found collections: " << collections.size() << endl;
-            cout << "Found remainders: " << remainders.size() << endl;
-
-            // auto[collections, remainders] = SequenceParser::assemble(entries);
+            // cout << "Found collections: " << collections.size() << endl;
+            // cout << "Found remainders: " << remainders.size() << endl;
         }
     }
     catch (const filesystem_error& ex) {
@@ -96,19 +48,16 @@ int main(int argc, char** argv)
     // // };
     // // auto[collections, remainders] = FileParser::assemble(l);
 
-    // std::cout << "Found collections: " << collections.count() << std::endl;
+    cout << endl << "Found collections: " << collections.size() << endl;
+    for(Collection i : collections) {
+        cout << "------------------------" << endl;
+        cout << i.format() << endl;
+        i.info();
+    }
 
-    // for(Collection i : collections) {
-    //     // std::cout << "------------------------" << std::endl;
-    //     i.info();
-    //     std::cout << "--" << std::endl;
-    //     std::cout << i.format() << std::endl;
-    // }
-
-    // std::cout << "Found remainders: " << remainders.count() << std::endl;
-    // for(QString s : remainders) {
-    //     std::cout << qPrintable(s) << std::endl;
-    // }
+    cout << endl << "Found remainders: " << remainders.size() << endl;
+    for(string s : remainders)
+        cout << s << endl;
 
     return 0;
 }
