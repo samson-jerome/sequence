@@ -45,10 +45,10 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     regex re("(-*\\d+)(\\D*)$"); 
     smatch match; 
 
-    string head, tail, index, hash;
+    string head, tail, str_index, hash;
     set<string> keys;
-    unordered_multimap<string, int> collections_ummap;
-    typedef unordered_multimap<string, int>::iterator ummap_it;
+    unordered_multimap<string, string> collections_ummap;
+    typedef unordered_multimap<string, string>::iterator ummap_it;
     typedef set<string>::iterator keysIt;
 
     for (int i = 0; i < entries.size(); ++i) {
@@ -59,19 +59,19 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
             // cout << "   - matches: " << match.size();
             
             head = entries.at(i).substr(0, match.position(0));
-            index = match.str(1);
+            str_index = match.str(1);
             tail = match.str(2);
             hash = tail + "|" + head;  // convention to store unicity of a sequence
             keys.insert(hash); // should we tets existence here ?
 
             // Limit size of int, sequence can't have more than ~2B frame
             // as a global range
-            collections_ummap.insert(make_pair(hash, stoi(index)));
+            collections_ummap.insert(make_pair(hash, str_index));
             // if(i < 20){
             //     std::cout << (entries.at(i)) << " --> " \
             //         << (hash) << " / " \
             //         << (head) << " / " \
-            //         << (index) << " / " \
+            //         << (str_index) << " / " \
             //         << (tail) << std::endl;
             // }
             // else{
@@ -87,6 +87,7 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     cout << "Sequence unique keys:" << endl;
     vector<string> splits;
     vector<int> indexes;
+    vector<string> str_indexes;
     string delims = "|";
     for (keysIt key=keys.begin(); key!=keys.end(); ++key)
     {
@@ -96,16 +97,19 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
 
         // Collect indexes for current hash key i.e. current sequence
         indexes.clear();
+        str_indexes.clear();
         pair<ummap_it, ummap_it> result = collections_ummap.equal_range(*key);
         for (ummap_it it = result.first; it != result.second; it++) {
-            indexes.push_back(it->second);
+            str_indexes.push_back(it->second);
+            indexes.push_back(stoi(it->second));
         }
         sort(indexes.begin(), indexes.end());
+        sort(str_indexes.begin(), str_indexes.end());
+        // TODO get padding
 
         // Identify hash entries with a single index to handle as a remainder instead of collection
         if (distance(result.first, result.second)==1) {
-            // FIXME bug with zero padding indexes
-            auto singleFile = splits.at(1) + std::to_string(indexes[0]) + splits.at(0);
+            auto singleFile = splits.at(1) + result.first->second + splits.at(0);
             remainders.push_back(singleFile);
             continue;
         }
