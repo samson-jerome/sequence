@@ -100,11 +100,7 @@ void Collection::_findHoles() {
 }
 
 /**
-    Encodes a single digit of a POSTNET "A" bar code.
 
-    @param digit the single digit to encode.
-    @return a bar code of the digit using "|" as the long
-    bar and "," as the half bar.
 */
 void Collection::_separate(){
 

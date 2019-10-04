@@ -21,10 +21,19 @@ typedef struct Range{
 } Range;
 
 
+typedef struct CollectionFormats {
+    string buf = "{head}[{ranges}]{tail}";
+    string rv = "{head}{#}{tail} {ranges}";
+
+} CollectionFormats;
+
+
 class Collection {
     // TODO 
     //  - implement iterator interface (Boost or std?)
     //  - add formatting support
+    //  - add operators: + - <<
+    //  - add cache format and holes and invalidation mecanism
 
     // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
     
@@ -34,6 +43,9 @@ class Collection {
 
     std::vector<int> m_holes;
     std::deque<Range> m_ranges;
+
+    // std::string m_cached_format;
+    // std::string m_cached_holes;
 
 public:
     Collection();

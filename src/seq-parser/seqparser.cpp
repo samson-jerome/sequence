@@ -67,33 +67,19 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
             // Limit size of int, sequence can't have more than ~2B frame
             // as a global range
             collections_ummap.insert(make_pair(hash, str_index));
-            // if(i < 20){
-            //     std::cout << (entries.at(i)) << " --> " \
-            //         << (hash) << " / " \
-            //         << (head) << " / " \
-            //         << (str_index) << " / " \
-            //         << (tail) << std::endl;
-            // }
-            // else{
-            //     if(i == 21) std::cout << "..." << std::endl;
-            // }            
         }
         else {
             remainders.push_back(entries.at(i));
-            // cout << entries.at(i) << " --> remainders" << endl;
         }
     }
 
-    cout << "Sequence unique keys:" << endl;
     vector<string> splits;
     vector<int> indexes;
     vector<string> str_indexes;
     string delims = "|";
     for (keysIt key=keys.begin(); key!=keys.end(); ++key)
     {
-        cout << *key;
         boost::split(splits, *key, boost::is_any_of(delims));
-    
 
         // Collect indexes for current hash key i.e. current sequence
         indexes.clear();
@@ -122,7 +108,6 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
         );
 
         collections.push_back(currentCollection);
-    
     }
 
     return make_tuple(collections, remainders);
