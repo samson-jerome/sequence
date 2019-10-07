@@ -6,7 +6,6 @@ add_library(seqparser SHARED seqparser.cpp collection.cpp)
 # show up in IDEs unless they are listed in add_library.
 
 
-message(${CMAKE_CURRENT_SOURCE_DIR})
 # We need this directory, and users of our library will need it too
 target_include_directories(seqparser
     PUBLIC 
