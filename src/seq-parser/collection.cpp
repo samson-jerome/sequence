@@ -190,8 +190,8 @@ void Collection::_separate(){
     int last = m_indexes.back();
     int beforeLast = m_indexes.at(m_indexes.size()-2);
 
-    cout << "beforeLast = " << beforeLast << endl;
-    cout << "last = " << last << endl;
+    // cout << "beforeLast = " << beforeLast << endl;
+    // cout << "last = " << last << endl;
 
     if(last-r.end == r.step) {
         r.end = last;

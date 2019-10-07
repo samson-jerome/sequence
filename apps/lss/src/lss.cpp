@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     // QDir mydir(QString::fromStdString(folder));
     // filesystem.path mypath()
     path p("/home/jer/workspace/dev/samples/sequences/test");
-    cout << "given path: " << p << endl;
+    // cout << "given path: " << p << endl;
 
     try {
         if(exists(p) && is_directory(p)) {
@@ -50,14 +50,14 @@ int main(int argc, char** argv)
     // // };
     // // auto[collections, remainders] = FileParser::assemble(l);
 
-    cout << endl << "Found collections: " << collections.size() << endl;
+    // cout << endl << "Found collections: " << collections.size() << endl;
     for(Collection i : collections) {
-        cout << "------------------------" << endl;
+        // cout << "------------------------" << endl;
         cout << i.format() << endl;
-        i.info();
+        // i.info();
     }
 
-    cout << endl << "Found remainders: " << remainders.size() << endl;
+    // cout << endl << "Found remainders: " << remainders.size() << endl;
     for(string s : remainders)
         cout << s << endl;
 
