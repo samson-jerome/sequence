@@ -7,7 +7,9 @@ using namespace std;
 using namespace boost::filesystem;
 using namespace boost::algorithm;
 
-int give_me_one() {
+using namespace sequence;
+
+int sequence::give_me_one() {
     Range r;
     cout << "Range: " << r.isSingleFrame << endl;
 
@@ -18,20 +20,8 @@ int give_me_one() {
     return 1;
 }
 
-SequenceParser::SequenceParser() {
-    cout << "SequenceParser" << endl;
-}
 
-// void SequenceParser::assemble(directory_iterator d, vector<Collection>* collections, vector<std::string>* remainders) {
-//     cout << "SequenceParser::assemble (iterator)" << endl;
-// }
-
-// void SequenceParser::assemble(vector<string> entries, vector<Collection>* collections, vector<std::string>* remainders) {
-//     cout << "SequenceParser::assemble (vector of entries)" << endl;
-// }
-
-std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<string> entries) {
-    cout << "tuple of collection and remainders > SequenceParser::assemble (vector of entries)" << endl;
+std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string> entries) {
 
     vector<Collection> collections;
     vector<string> remainders;
@@ -39,7 +29,7 @@ std::tuple<vector<Collection>, vector<string>> SequenceParser::assemble(vector<s
     // Filter hidden
     // Filter folders, files, symlink and special items
 
-    // TODO probably better to avoid multimap here, see following ref
+    // TODO probably better to avoid multimap here, see ref:
     // http://www.yosoygames.com.ar/wp/2014/05/the-sorted-vector-pattern-part-i/
 
     regex re("(-*\\d+)(\\D*)$"); 

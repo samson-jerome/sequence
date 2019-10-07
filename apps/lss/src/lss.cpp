@@ -6,6 +6,7 @@
 
 using namespace std;
 using namespace boost::filesystem;
+using namespace sequence;
 
 int main(int argc, char** argv)
 {
@@ -28,7 +29,8 @@ int main(int argc, char** argv)
                 entries.push_back(x.path().filename().string()); 
 
             sort(entries.begin(), entries.end());
-            tie(collections, remainders) = SequenceParser::assemble(entries);
+            // tie(collections, remainders) = SequenceParser::assemble(entries);
+            tie(collections, remainders) = assemble(entries);
 
             // cout << "Found collections: " << collections.size() << endl;
             // cout << "Found remainders: " << remainders.size() << endl;
