@@ -7,7 +7,7 @@ project(seq-parser VERSION 0.1.0
                     DESCRIPTION "Sequence parser"
                     LANGUAGES CXX)
 
-
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Must use GNUInstallDirs to install libraries into correct
 # locations on all platforms.
 include(GNUInstallDirs)
