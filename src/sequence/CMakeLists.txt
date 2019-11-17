@@ -8,11 +8,11 @@ add_library(sequence SHARED sequence.cpp collection.cpp)
 
 # We need this directory, and users of our library will need it too
 target_include_directories(sequence
-    PUBLIC 
-        $<INSTALL_INTERFACE:../../include>    
+    PUBLIC
+        # $<INSTALL_INTERFACE:../../include>    
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../external/fmt/include>    
-
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
