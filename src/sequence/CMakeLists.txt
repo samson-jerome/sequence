@@ -1,4 +1,4 @@
-message("Sequence: src/sequence")
+message(STATUS "Sequence: src/sequence")
 
 # Library
 add_library(sequence SHARED sequence.cpp collection.cpp)
@@ -22,3 +22,9 @@ target_include_directories(sequence
 
 # # IDEs should put the headers in a nice place
 # source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})s
+
+
+# ---------------------------------------------------------------------
+# Create targets
+target_link_libraries (sequence PUBLIC Boost::filesystem)
+target_link_libraries (sequence PRIVATE fmt::fmt)

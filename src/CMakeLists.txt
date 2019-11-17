@@ -1,4 +1,4 @@
-message ("Sequence: src")
+message (STATUS "Sequence: src")
 add_subdirectory(sequence)
 
 

@@ -17,25 +17,22 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
 # ---------------------------------------------------------------------
-# Add app and lib sources
-add_subdirectory (src)
-add_subdirectory (apps)
+# Add dependencies
 
-# Add external submodule
+# external submodule
 add_subdirectory (external EXCLUDE_FROM_ALL)
 
-# Add external libs
+# external libs
 set (Boost_USE_STATIC_LIBS OFF)
 set (Boost_USE_MULTITHREADED ON)
 set (Boost_USE_STATIC_RUNTIME OFF)
 find_package (Boost 1.69 REQUIRED COMPONENTS filesystem)
-message (STATUS "Boost version: ${Boost_VERSION}")
+
 
 # ---------------------------------------------------------------------
-# Create targets
-target_link_libraries (sequence PUBLIC Boost::filesystem)
-target_link_libraries (sequence PRIVATE fmt::fmt)
-
+# Add app and lib sources
+add_subdirectory (src)
+add_subdirectory (apps)
 
 # # ---------------------------------------------------------------------
 # # Add GTest using following methodology
