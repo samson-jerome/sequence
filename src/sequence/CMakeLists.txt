@@ -1,13 +1,13 @@
-message("seq-parser")
+message("Sequence: src/sequence")
 
 # Library
-add_library(seqparser SHARED seqparser.cpp collection.cpp)
+add_library(sequence SHARED sequence.cpp collection.cpp)
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.
 
 
 # We need this directory, and users of our library will need it too
-target_include_directories(seqparser
+target_include_directories(sequence
     PUBLIC 
         $<INSTALL_INTERFACE:../../include>    
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>

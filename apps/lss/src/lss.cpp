@@ -1,5 +1,5 @@
 #include <iostream>
-#include "seqparser.h"
+#include "sequence.h"
 #include <boost/filesystem.hpp>
 
 #include "collection.h"

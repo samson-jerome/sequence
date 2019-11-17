@@ -1,7 +1,7 @@
 #include <regex> 
 
 #include "collection.h"
-#include "seqparser.h"
+#include "sequence.h"
 
 using namespace std;
 using namespace boost::filesystem;

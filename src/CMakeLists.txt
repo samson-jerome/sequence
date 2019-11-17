@@ -1,4 +1,4 @@
-message("src")
-add_subdirectory(seq-parser)
+message ("Sequence: src")
+add_subdirectory(sequence)
 
 

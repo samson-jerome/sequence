@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "seqparser.h"
+#include "sequence.h"
 
 TEST (give_me_one, correct_return) { 
     EXPECT_EQ (1, sequence::give_me_one ());

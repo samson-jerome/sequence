@@ -1,5 +1,5 @@
-#ifndef SEQPARSER_H
-#define SEQPARSER_H
+#ifndef SEQUENCE_H
+#define SEQUENCE_H
 #pragma once
 
 #include <iostream>
@@ -33,4 +33,4 @@ namespace sequence {
     // Collection parse(string value, string pattern);
 }
 
-#endif // SEQPARSER_H
+#endif // SEQUENCE_H
