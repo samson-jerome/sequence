@@ -32,7 +32,6 @@ find_package (Boost 1.69 REQUIRED COMPONENTS filesystem)
 # ---------------------------------------------------------------------
 # Add app and lib sources
 add_subdirectory (src)
-add_subdirectory (apps)
 
 # # ---------------------------------------------------------------------
 # # Add GTest using following methodology
