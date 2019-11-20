@@ -1,5 +1,7 @@
 #include "collection.h"
 
+using namespace sequence;
+
 Collection::Collection() {
     std::vector<int> m_indexes = {};
     std::string m_head = "";
