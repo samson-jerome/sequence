@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.5)
 # ---------------------------------------------------------------------
 # Project setup
 project (sequence VERSION 0.1.0
-                    DESCRIPTION "Sequence parser"
                     LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 11)
@@ -26,8 +25,7 @@ add_subdirectory (external EXCLUDE_FROM_ALL)
 set (Boost_USE_STATIC_LIBS OFF)
 set (Boost_USE_MULTITHREADED ON)
 set (Boost_USE_STATIC_RUNTIME OFF)
-find_package (Boost 1.69 REQUIRED COMPONENTS filesystem)
-
+find_package (Boost 1.53 REQUIRED COMPONENTS filesystem)
 
 # ---------------------------------------------------------------------
 # Add app and lib sources
