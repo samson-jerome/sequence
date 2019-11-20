@@ -1,15 +1,9 @@
-#include "gtest/gtest.h"
 #include "sequence.h"
 
-TEST (give_me_one, correct_return) { 
-    EXPECT_EQ (1, sequence::give_me_one ());
-}
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
 
-TEST (give_me_one, incorrest) { 
-    ASSERT_EQ (1, sequence::give_me_one ());
-}
 
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+TEST_CASE("first test", "test1") {
+  REQUIRE(sequence::give_me_one() == 1);
 }
