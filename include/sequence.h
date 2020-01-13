@@ -24,8 +24,6 @@ namespace sequence {
     // - add parse method to construct a collection from a string pattern
     // - tests
 
-    int give_me_one();
-
     tuple<vector<Collection>, vector<string>> assemble(vector<string> entries);
     // bool assemble(vector<string>, vector<Collection>* collections, vector<string>* remainders);
 

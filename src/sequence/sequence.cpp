@@ -9,17 +9,6 @@ using namespace boost::algorithm;
 
 using namespace sequence;
 
-int sequence::give_me_one() {
-    Range r;
-    cout << "Range: " << r.isSingleFrame << endl;
-
-    Collection c;
-    cout << "Collection: " << c.format() << endl;
-
-    cout << "surprise !" << endl;
-    return 1;
-}
-
 
 std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string> entries) {
 
