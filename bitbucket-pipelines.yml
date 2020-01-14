@@ -23,6 +23,7 @@ pipelines:
           - cd external
           - git submodule init
           - git submodule update
+          - cd ..
           
           - echo "Build sequence"
           - cmake -S . -B build
