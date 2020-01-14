@@ -3,11 +3,23 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: msoos/gcc-cmake-boost
+image: rikorose/gcc-cmake
 
 pipelines:
   default:
     - step:
         script:
+          # Print the Linux version.
+          - uname -a
+          # Print the gcc version.
+          - gcc --version
+          # Print the cmake version.
+          - cmake --version
+
+          - echo "Install Boost"
+          - apt-get update && apt-get install -y --no-install-recommends libboost-all-dev
+          - apt-get clean
+
+          - echo "Build sequence"
           - cmake -S . -B build
           - cmake --build
