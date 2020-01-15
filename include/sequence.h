@@ -2,6 +2,7 @@
 #define SEQUENCE_H
 #pragma once
 
+#include <stdexcept>
 #include <iostream>
 #include <vector>
 #include <set>
@@ -27,8 +28,13 @@ namespace sequence {
     tuple<vector<Collection>, vector<string>> assemble(vector<string> entries);
     // bool assemble(vector<string>, vector<Collection>* collections, vector<string>* remainders);
 
-    // Collection parse(string value);
+    Collection parse(string value);
     // Collection parse(string value, string pattern);
+
+    class parse_exception : public std::runtime_error {
+    public:
+        parse_exception(const string msg) : std::runtime_error(msg) {};
+    };
 }
 
 #endif // SEQUENCE_H

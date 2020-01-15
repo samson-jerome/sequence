@@ -61,20 +61,37 @@ TEST_CASE("assembling collections", "[assemble]") {
 // --------------------------------------------------------------------------
 // Parsing
 TEST_CASE("parsing fails if not collection", "[parsing]") {
-  vector<sequence::Collection> collection;
+  sequence::Collection collection;
   std::string entry;
 
-  // entry = "my_file.ext";
-  // try {
-  //   collection = sequence::parse(entry);
-  // } 
-  // catch (const sequence::parse_exception& e) {
-  //   cout << "Cannot parse if argument is not a collection" << endl;
-  //   REQUIRE(true);
-  // }
-  // catch (...) {
-  //   cout << "Unhandled exception" << endl;
-  //   REQUIRE(false);
-  // }
+  entry = "my_file.ext";
+  try {
+    collection = sequence::parse(entry);
+  } 
+  catch (const sequence::parse_exception& e) {
+    REQUIRE(true);
+  }
+  catch (...) {
+    cout << "Unhandled exception" << endl;
+    REQUIRE(false);
+  }
+}
 
+TEST_CASE("parsing success", "[parsing]") {
+  sequence::Collection collection;
+  std::string entry;
+
+  entry = "my_file.%04d.ext [1-10]";
+  try {
+    collection = sequence::parse(entry);
+  } 
+  catch (const sequence::parse_exception& e) {
+    REQUIRE(false);
+  }
+  catch (...) {
+    cout << "Unhandled exception" << endl;
+    REQUIRE(false);
+  }
+
+  REQUIRE(true);
 }

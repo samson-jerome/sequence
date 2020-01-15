@@ -91,3 +91,47 @@ std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string>
 
     return make_tuple(collections, remainders);
 }
+
+
+Collection sequence::parse(string entry) {
+
+    cout << "entry = " << entry << endl;
+
+    regex re("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$"); 
+    smatch match;
+    string head, tail, padding;
+    int start, end;
+
+    if (regex_search(entry, match, re) && match.size() > 1) {
+        cout << "matches = " << match.size() << endl;
+        cout << "matches pos = ";
+        for (int i=0; i<match.size()-1; i++) cout << match.position(0) << ", ";
+        cout << match.position(match.size()) << endl;
+
+        // head = entry.substr(0, match.position(0));
+        // cout << "head = " << head << endl;
+        // padding = match.str(1);
+        // tail = match.str(2);
+        // start = stoi(match.str(3));
+        // end = stoi(match.str(4));
+
+        // cout << "head = " << head << endl;
+        // cout << "padding = " << padding << endl;
+        // cout << "tail = " << tail << endl;
+        // cout << "start = " << start << endl;
+        // cout << "end = " << start << endl;
+
+        // vector<int> indexes(end);
+        // for( int i = start; i <= end; i++ )
+        //     indexes.push_back( i );
+
+        // // std::iota(indexes.begin(), indexes.end(), start);
+        // Collection coll(head, tail, indexes);
+    }
+    else {
+        throw parse_exception("sequence pattern not matched");
+    }
+
+// ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
+    // '{head}{padding}{tail} [{ranges}]'
+}
