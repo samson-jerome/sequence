@@ -15,6 +15,13 @@ Collection::Collection(const std::string &head, const std::string &tail, const s
     this->_separate();
 }
 
+Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding)
+    :m_head(head), m_tail(tail), m_indexes(indexes), m_padding(padding)
+{
+    this->_findHoles();
+    this->_separate();
+}
+
 int Collection::count() {
     return this->m_indexes.size();
 }
@@ -27,13 +34,24 @@ int Collection::last() {
     return this->m_indexes.back();
 }
 
+std::string Collection::head() const{
+    return m_head;
+}
+
 void Collection::setHead(std::string head){
     m_head = head;
 }
 
-std::string Collection::getHead() const{
-    return m_head;
+int Collection::padding() const{
+    return m_padding;
 }
+
+void Collection::setPadding(int padding) {
+    if(0 < padding)
+        m_padding = padding;
+    throw std::invalid_argument("padding cannot be negative");
+}
+
 
 void Collection::info() {
     std::cout << "Collection construct" << std::endl;

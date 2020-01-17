@@ -43,6 +43,7 @@ namespace sequence {
         std::vector<int> m_indexes;
         std::string m_head;
         std::string m_tail;
+        int m_padding;
 
         std::vector<int> m_holes;
         std::deque<Range> m_ranges;
@@ -53,6 +54,7 @@ namespace sequence {
     public:
         Collection();
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
+        Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
 
         // std::string toString(const std::string &format=DEFAULT_FORMAT);
         // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
@@ -62,8 +64,11 @@ namespace sequence {
         std::string format();
         void info();
 
+        std::string head() const;
         void setHead(std::string);
-        std::string getHead() const;
+
+        int padding() const;
+        void setPadding(int);
 
         std::vector<std::string> getFileList() const;
     protected:

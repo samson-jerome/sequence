@@ -55,22 +55,29 @@ std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string>
     vector<string> splits;
     vector<int> indexes;
     vector<string> str_indexes;
+    int padding;
     string delims = "|";
     for (keysIt key=keys.begin(); key!=keys.end(); ++key)
     {
         boost::split(splits, *key, boost::is_any_of(delims));
 
         // Collect indexes for current hash key i.e. current sequence
+        padding = 0;
         indexes.clear();
         str_indexes.clear();
         pair<ummap_it, ummap_it> result = collections_ummap.equal_range(*key);
         for (ummap_it it = result.first; it != result.second; it++) {
             str_indexes.push_back(it->second);
             indexes.push_back(stoi(it->second));
+
+            if ( it->second[0] == '0' && padding < it->second.size())
+                padding = it->second.size();
         }
+
+        // TODO use pairs to store int and str if different or 
+        // if varying  padding?
         sort(indexes.begin(), indexes.end());
         sort(str_indexes.begin(), str_indexes.end());
-        // TODO get padding
 
         // Identify hash entries with a single index to handle as a remainder instead of collection
         if (distance(result.first, result.second)==1) {
@@ -83,7 +90,8 @@ std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string>
         Collection currentCollection( 
             splits.at(1), 
             splits.at(0), 
-            indexes
+            indexes,
+            padding
         );
 
         collections.push_back(currentCollection);
@@ -93,45 +101,55 @@ std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string>
 }
 
 
+// ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
+// '{head}{padding}{tail} [{ranges}]'
 Collection sequence::parse(string entry) {
 
-    cout << "entry = " << entry << endl;
+    // cout << "entry = " << entry << endl;
 
     regex re("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$"); 
     smatch match;
-    string head, tail, padding;
-    int start, end;
+    string head, tail;
+    int start, end, padding;
 
     if (regex_search(entry, match, re) && match.size() > 1) {
-        cout << "matches = " << match.size() << endl;
-        cout << "matches pos = ";
-        for (int i=0; i<match.size()-1; i++) cout << match.position(0) << ", ";
-        cout << match.position(match.size()) << endl;
+        // cout << "matches = " << match.size() << endl;
+        // cout << "matches pos = ";
+        // for (int i=0; i<match.size()-1; i++) cout << match.position(i) << ", ";
+        // cout << match.position(match.size()) << endl;
 
-        // head = entry.substr(0, match.position(0));
-        // cout << "head = " << head << endl;
-        // padding = match.str(1);
-        // tail = match.str(2);
-        // start = stoi(match.str(3));
-        // end = stoi(match.str(4));
+        head = entry.substr(match.position(1), match.position(2)-1);
+        head = match.str(1);
+        padding = stoi(match.str(2));
+        tail = match.str(3);
+        start = stoi(match.str(4));
+        end = stoi(match.str(5));
 
+        // cout << "string matches:" << endl;
+        // cout << "head = " << match.str(1) << endl;
+        // cout << "padding = " << match.str(2) << endl;
+        // cout << "tail = " << match.str(3) << endl;
+        // cout << "start = " << match.str(4) << endl;
+        // cout << "end = " << match.str(5) << endl;
+
+        // cout << "values:" << endl;
         // cout << "head = " << head << endl;
         // cout << "padding = " << padding << endl;
         // cout << "tail = " << tail << endl;
         // cout << "start = " << start << endl;
-        // cout << "end = " << start << endl;
+        // cout << "end = " << end << endl;
 
-        // vector<int> indexes(end);
-        // for( int i = start; i <= end; i++ )
-        //     indexes.push_back( i );
-
-        // // std::iota(indexes.begin(), indexes.end(), start);
-        // Collection coll(head, tail, indexes);
+        vector<int> indexes;
+        // cout << "indexes: ";
+        for( int i = start; i <= end; i++ ) {
+            // cout << i << ",";
+            indexes.push_back( i );
+        }
+        cout << endl;
+        Collection coll(head, tail, indexes, padding);
+        return coll;
     }
     else {
         throw parse_exception("sequence pattern not matched");
     }
-
-// ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
-    // '{head}{padding}{tail} [{ranges}]'
 }
