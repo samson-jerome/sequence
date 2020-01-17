@@ -34,9 +34,9 @@ TEST_CASE("assembling collections", "[assemble]") {
   entries.push_back("aaa.2.ext");
   entries.push_back("aaa.3.ext");
   entries.push_back("aaa.4.ext");
-  entries.push_back("bbb.1.ext");
-  entries.push_back("bbb.2.ext");
-  entries.push_back("bbb.5.ext");
+  entries.push_back("bbb.001.ext");
+  entries.push_back("bbb.002.ext");
+  entries.push_back("bbb.005.ext");
 
   tie(collections, remainders) = sequence::assemble(entries);
   REQUIRE(remainders.size() == 0);
@@ -46,15 +46,16 @@ TEST_CASE("assembling collections", "[assemble]") {
   sequence::Collection bbb = collections.at(1);
 
   // SECTION( "complete sequence" ) {
-    cout << aaa.format() << endl;
+    cout << aaa.format() << " - padding: " << aaa.padding() <<endl;
     REQUIRE(aaa.format() == "aaa.[1:4].ext");
     REQUIRE(aaa.count() == 4);
   // }
 
   // SECTION( "incomplete sequence" ) {
-    cout << bbb.format() << endl;
+    cout << bbb.format() << " - padding: " << bbb.padding() <<endl;
     REQUIRE(bbb.format() == "bbb.[1:2,5].ext");
     REQUIRE(bbb.count() == 3);
+    REQUIRE(bbb.padding() == 3);
   // }
 }
 
@@ -84,9 +85,53 @@ TEST_CASE("parsing success", "[parsing]") {
   entry = "my_file.%04d.ext [1-10]";
   try {
     collection = sequence::parse(entry);
+    cout << "result is: " << collection.format() << endl;
+    REQUIRE(collection.count() == 10);
+    REQUIRE(collection.first() == 1);
+    REQUIRE(collection.last() == 10);
+    REQUIRE(collection.head() == "my_file.");
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(false);
+  }
+  catch (...) {
+    cout << "Unhandled exception" << endl;
+    REQUIRE(false);
+  }
+
+  entry = "my_file.%4d.ext [1-10]";
+  try {
+    collection = sequence::parse(entry);
+    cout << "result is: " << collection.format() << endl;
+
+    REQUIRE(collection.count() == 10);
+    REQUIRE(collection.first() == 1);
+    REQUIRE(collection.last() == 10);
+    REQUIRE(collection.head() == "my_file.");
+  } 
+  catch (const sequence::parse_exception& e) {
+    REQUIRE(false);
+  }
+  catch (...) {
+    cout << "Unhandled exception" << endl;
+    REQUIRE(false);
+  }
+
+
+  REQUIRE(true);
+}
+
+TEST_CASE("parsing failures on various wrong collections", "[parsing]") {
+  sequence::Collection collection;
+  std::string entry;
+
+  entry = "my_file.%04.ext [1-10]";
+  try {
+    collection = sequence::parse(entry);
+  } 
+  catch (const sequence::parse_exception& e) {
+    REQUIRE(true);
+    cout << "fail to parse: " << entry << endl;
   }
   catch (...) {
     cout << "Unhandled exception" << endl;
