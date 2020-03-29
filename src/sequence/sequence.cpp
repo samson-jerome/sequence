@@ -9,7 +9,10 @@ using namespace boost::algorithm;
 
 using namespace sequence;
 
-
+/**
+Parses a list of string to identify sequences with numerical indices.
+Returns a tuple with all collections found and the remainder singles entrie.
+*/
 std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string> entries) {
 
     vector<Collection> collections;
@@ -140,9 +143,7 @@ Collection sequence::parse(string entry) {
         // cout << "end = " << end << endl;
 
         vector<int> indexes;
-        // cout << "indexes: ";
         for( int i = start; i <= end; i++ ) {
-            // cout << i << ",";
             indexes.push_back( i );
         }
         cout << endl;
