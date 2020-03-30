@@ -34,12 +34,43 @@ int Collection::last() {
     return this->m_indexes.back();
 }
 
+// http://www.cplusplus.com/reference/set/set/
+void Collection::insert(int frame) {
+
+    int current;
+    // for (std::vector<int>::const_iterator i = m_indexes.begin(); i != m_indexes.end(); ++i) {
+    //     if *i < 
+    // }
+
+    // int prev = m_indexes.at(0);
+    // int current;
+
+    // for (std::vector<int>::const_iterator i = m_indexes.begin()+1; i != m_indexes.end(); ++i) {
+    //     current = *i;
+    //     while (current-prev != 1) {
+    //         m_holes.push_back(++prev);
+    //     }
+    //     ++prev;
+    // }
+
+    // Recreate the ranges
+    this->_separate();
+}
+
 std::string Collection::head() const{
     return m_head;
 }
 
 void Collection::setHead(std::string head){
     m_head = head;
+}
+
+std::string Collection::tail() const{
+    return m_tail;
+}
+
+void Collection::setTail(std::string tail){
+    m_tail = tail;
 }
 
 int Collection::padding() const{
@@ -102,6 +133,11 @@ std::vector<std::string> Collection::getFileList() const{
     return result;
 }
 
+
+/**
+Updates current collection to recreate the list of missing frames from the list 
+of indices.
+*/
 void Collection::_findHoles() {
 
     // If length > 0
@@ -120,7 +156,8 @@ void Collection::_findHoles() {
 }
 
 /**
-
+Updates current collection to recreate the list of ranges from the list of 
+indices.
 */
 void Collection::_separate(){
 

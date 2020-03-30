@@ -60,11 +60,16 @@ namespace sequence {
         int count();
         int first();
         int last();
+        void insert(int);
+
         std::string format();
         void info();
 
         std::string head() const;
         void setHead(std::string);
+
+        std::string tail() const;
+        void setTail(std::string);
 
         int padding() const;
         void setPadding(int);
