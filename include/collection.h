@@ -11,7 +11,6 @@
 
 // enum pattern {}
 using namespace fmt::literals;
-using namespace std;
 
 namespace sequence {
 
