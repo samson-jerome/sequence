@@ -118,7 +118,7 @@ std::string Collection::format() {
         }
     }
 
-    fullRange = boost::algorithm::join(rangeTokens, ",");
+//    fullRange = boost::algorithm::join(rangeTokens, ",");
 
     return fmt::format("{head}[{range}]{tail}",  
         "head"_a=m_head, "range"_a=fullRange, "tail"_a=m_tail);

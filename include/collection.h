@@ -6,7 +6,7 @@
 #include <vector>
 #include <deque>
 
-#include <boost/algorithm/string/join.hpp>
+//#include <boost/algorithm/string/join.hpp>
 #include "fmt/format.h"
 
 // enum pattern {}
@@ -23,9 +23,9 @@ namespace sequence {
 
 
     typedef struct CollectionFormats {
-        string buf = "{head}[{ranges}]{tail}";
-        string rv = "{head}{#}{tail} {ranges}";
-        string percent = "{head}{%04d}{tail} {ranges}";
+        std::string buf = "{head}[{ranges}]{tail}";
+        std::string rv = "{head}{#}{tail} {ranges}";
+        std::string percent = "{head}{%04d}{tail} {ranges}";
 
     } CollectionFormats;
 

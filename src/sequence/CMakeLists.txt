@@ -26,5 +26,5 @@ target_include_directories(sequence
 
 # ---------------------------------------------------------------------
 # Create targets
-target_link_libraries (sequence PUBLIC Boost::filesystem)
+#target_link_libraries (sequence PUBLIC Boost::filesystem)
 target_link_libraries (sequence PRIVATE fmt::fmt)

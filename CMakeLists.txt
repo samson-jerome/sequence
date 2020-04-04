@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.5)
 project (sequence VERSION 0.1.0
                     LANGUAGES CXX)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -22,10 +22,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 add_subdirectory (external EXCLUDE_FROM_ALL)
 
 # external libs
-set (Boost_USE_STATIC_LIBS OFF)
-set (Boost_USE_MULTITHREADED ON)
-set (Boost_USE_STATIC_RUNTIME OFF)
-find_package (Boost 1.53 REQUIRED COMPONENTS filesystem)
+#set (Boost_USE_STATIC_LIBS OFF)
+#set (Boost_USE_MULTITHREADED ON)
+#set (Boost_USE_STATIC_RUNTIME OFF)
+#find_package (Boost 1.53 REQUIRED COMPONENTS filesystem)
 
 # ---------------------------------------------------------------------
 # Add app and lib sources
