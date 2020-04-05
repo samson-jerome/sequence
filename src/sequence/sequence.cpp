@@ -5,8 +5,6 @@
 
 using std::string, std::cout, std::endl;
 using std::set, std::vector, std::unordered_multimap, std::pair;
-//using namespace boost::filesystem;
-//using namespace boost::algorithm;
 
 namespace sequence {
 
@@ -56,14 +54,16 @@ namespace sequence {
             }
         }
 
-        vector<string> splits;
+        string hash_head="", hash_tail="";
         vector<int> indexes;
         vector<string> str_indexes;
-        int padding;
+        int padding, pos;
         string delims = "|";
         for (keysIt key = keys.begin(); key != keys.end(); ++key)
         {
-            // boost::split(splits, *key, boost::is_any_of(delims));
+            pos = (*key).find(delims);
+            hash_tail = (*key).substr(0, pos);
+            hash_head = (*key).substr(pos+1);
 
             // Collect indexes for current hash key i.e. current sequence
             padding = 0;
@@ -85,15 +85,15 @@ namespace sequence {
 
             // Identify hash entries with a single index to handle as a remainder instead of collection
             if (distance(result.first, result.second) == 1) {
-                auto singleFile = splits.at(1) + result.first->second + splits.at(0);
+                auto singleFile = hash_head + result.first->second + hash_tail;
                 remainders.push_back(singleFile);
                 continue;
             }
 
             // Create the collection for the current hash key
             Collection currentCollection(
-                splits.at(1),
-                splits.at(0),
+                hash_head,
+                hash_tail,
                 indexes,
                 padding
                 );
