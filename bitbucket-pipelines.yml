@@ -16,10 +16,6 @@ pipelines:
           # Print the cmake version.
           - cmake --version
 
-          #- echo "Install Boost"
-          #- apt-get update && apt-get install -y --no-install-recommends libboost-all-dev
-          #- apt-get clean
-
           - cd external
           - git submodule init
           - git submodule update
