@@ -9,18 +9,14 @@
 #include <unordered_map> 
 #include <regex>
 
-//#include <boost/filesystem.hpp>
-//#include <boost/algorithm/string.hpp>
-//#include <boost/algorithm/string/split.hpp>
-
 #include "collection.h"
 
-//using namespace boost::filesystem;
 using std::vector;
 using std::string;
 using std::tuple;
 
 namespace sequence {
+
     // TODO:
     // - allow additional regex pattern
     // - set minimum items arg to match or not single number sequences
