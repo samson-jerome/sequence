@@ -3,21 +3,21 @@
 #include "collection.h"
 #include "sequence.h"
 
-using std::string;
-using std::cout;
-using std::endl;
-using std::set;
-using std::vector;
-using std::unordered_multimap;
-using std::pair;
-
 namespace sequence {
+
+    using std::string;
+    using std::cout;
+    using std::endl;
+    using std::set;
+    using std::vector;
+    using std::unordered_multimap;
+    using std::pair;
 
     /**
     Parses a list of string to identify sequences with numerical indices.
     Returns a tuple with all collections found and the remainder singles entrie.
     */
-    std::tuple<vector<Collection>, vector<string>> sequence::assemble(vector<string> entries) {
+    std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<std::string> entries) {
 
         vector<Collection> collections;
         vector<string> remainders;
@@ -112,7 +112,7 @@ namespace sequence {
 
     // ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
     // '{head}{padding}{tail} [{ranges}]'
-    Collection sequence::parse(string entry) {
+    Collection sequence::parse(std::string entry) {
 
         // cout << "entry = " << entry << endl;
 
