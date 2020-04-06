@@ -1,4 +1,3 @@
-
 #include "catch.hpp"
 
 #include "sequence.h"
@@ -20,6 +19,9 @@ TEST_CASE("assembling single files", "[assemble]") {
 
     tie(collections, remainders) = sequence::assemble(entries);
     REQUIRE(remainders.size() == 3);
+    REQUIRE(remainders.at(0) == "one");
+    REQUIRE(remainders.at(1) == "two");
+    REQUIRE(remainders.at(2) == "three");
     REQUIRE(collections.size() == 0);
 }
 
@@ -49,6 +51,8 @@ TEST_CASE("assembling collections", "[assemble]") {
     cout << aaa.format() << " - padding: " << aaa.padding() <<endl;
     REQUIRE(aaa.format() == "aaa.[1:4].ext");
     REQUIRE(aaa.count() == 4);
+    REQUIRE(aaa.head() == "aaa.");
+    REQUIRE(aaa.tail() == ".ext");
   // }
 
   // SECTION( "incomplete sequence" ) {
@@ -56,6 +60,8 @@ TEST_CASE("assembling collections", "[assemble]") {
     REQUIRE(bbb.format() == "bbb.[1:2,5].ext");
     REQUIRE(bbb.count() == 3);
     REQUIRE(bbb.padding() == 3);
+    REQUIRE(bbb.head() == "bbb.");
+    REQUIRE(bbb.tail() == ".ext");
   // }
 }
 
@@ -76,6 +82,16 @@ TEST_CASE("parsing fails if not collection", "[parsing]") {
     cout << "Unhandled exception" << endl;
     REQUIRE(false);
   }
+}
+TEST_CASE("Parsing successs with various correct formats"){
+  sequence::Collection seq;
+  std::vector<std::string> entries;
+
+  REQUIRE(sequence::parse("frame.%04d.exr [1050-1080]").format() == "frame.[1050:1080].exr");
+  //REQUIRE(sequence::parse("frame%03d.tga [001-100]").format() == "frame[001:100].tga");
+
+  cout << endl;
+
 }
 
 TEST_CASE("parsing success", "[parsing]") {
