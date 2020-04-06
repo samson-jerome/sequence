@@ -90,6 +90,7 @@ TEST_CASE("parsing success", "[parsing]") {
     REQUIRE(collection.first() == 1);
     REQUIRE(collection.last() == 10);
     REQUIRE(collection.head() == "my_file.");
+    REQUIRE(collection.tail() == ".ext");
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(false);
@@ -108,6 +109,7 @@ TEST_CASE("parsing success", "[parsing]") {
     REQUIRE(collection.first() == 1);
     REQUIRE(collection.last() == 10);
     REQUIRE(collection.head() == "my_file.");
+    REQUIRE(collection.tail() == ".ext");
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(false);
