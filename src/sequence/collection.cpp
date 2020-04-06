@@ -104,21 +104,18 @@ void Collection::info() {
 
 std::string Collection::format() {
     std::string fullRange = "";
-    std::deque<std::string> rangeTokens;
 
     for(Range r : m_ranges){
         if(r.isSingleFrame) {
-            rangeTokens.push_back(std::to_string(r.start));
+            fullRange += std::to_string(r.start) + ",";
         } else {
             auto val = (r.step==1) ? 
                 std::to_string(r.start) + ":" + std::to_string(r.end) :
                 std::to_string(r.start) + ":" + std::to_string(r.end) + "x" + std::to_string(r.step);
-            
-            rangeTokens.push_back(val);
+            fullRange += val + ",";
         }
     }
-
-//    fullRange = boost::algorithm::join(rangeTokens, ",");
+    fullRange.erase(fullRange.size() - 1);
 
     return fmt::format("{head}[{range}]{tail}",  
         "head"_a=m_head, "range"_a=fullRange, "tail"_a=m_tail);

@@ -3,8 +3,13 @@
 #include "collection.h"
 #include "sequence.h"
 
-using std::string, std::cout, std::endl;
-using std::set, std::vector, std::unordered_multimap, std::pair;
+using std::string;
+using std::cout;
+using std::endl;
+using std::set;
+using std::vector;
+using std::unordered_multimap;
+using std::pair;
 
 namespace sequence {
 
