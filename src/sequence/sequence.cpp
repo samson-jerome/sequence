@@ -17,13 +17,10 @@ namespace sequence {
     Parses a list of string to identify sequences with numerical indices.
     Returns a tuple with all collections found and the remainder singles entrie.
     */
-    std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<std::string> entries) {
+    std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<std::string> entries, int minimum_items) {
 
         vector<Collection> collections;
         vector<string> remainders;
-
-        // Filter hidden
-        // Filter folders, files, symlink and special items
 
         // TODO probably better to avoid multimap here, see ref:
         // http://www.yosoygames.com.ar/wp/2014/05/the-sorted-vector-pattern-part-i/
@@ -62,13 +59,14 @@ namespace sequence {
         string hash_head="", hash_tail="";
         vector<int> indexes;
         vector<string> str_indexes;
-        int padding, pos;
+        int padding;
+        std::size_t pos;
         string delims = "|";
         for (keysIt key = keys.begin(); key != keys.end(); ++key)
         {
             pos = (*key).find(delims);
             hash_tail = (*key).substr(0, pos);
-            hash_head = (*key).substr(pos+1);
+            hash_head = (*key).substr(pos + 1);
 
             // Collect indexes for current hash key i.e. current sequence
             padding = 0;
@@ -83,12 +81,14 @@ namespace sequence {
                     padding = it->second.size();
             }
 
+            // TODO insert in correct pos instead of brute force sorting
             // TODO use pairs to store int and str if different or 
-            // if varying  padding?
+            // if varying padding?
             sort(indexes.begin(), indexes.end());
             sort(str_indexes.begin(), str_indexes.end());
 
             // Identify hash entries with a single index to handle as a remainder instead of collection
+            // TODO use minimum_items to qualify if this is a remainder or collection
             if (distance(result.first, result.second) == 1) {
                 auto singleFile = hash_head + result.first->second + hash_tail;
                 remainders.push_back(singleFile);

@@ -1,3 +1,6 @@
+/***
+ *
+ */
 #ifndef COLLECTION_H
 #define COLLECTION_H
 
@@ -6,14 +9,15 @@
 #include <vector>
 #include <deque>
 
-//#include <boost/algorithm/string/join.hpp>
 #include "fmt/format.h"
 
-// enum pattern {}
 using namespace fmt::literals;
 
 namespace sequence {
 
+    /**
+     * A contigious section of frames.
+     */
     typedef struct Range{
         int start = 0;
         int end = 0;
@@ -21,7 +25,7 @@ namespace sequence {
         bool isSingleFrame=false;
     } Range;
 
-
+    // Predefined string sequence formatting
     typedef struct CollectionFormats {
         std::string buf = "{head}[{ranges}]{tail}";
         std::string rv = "{head}{#}{tail} {ranges}";
@@ -29,13 +33,18 @@ namespace sequence {
 
     } CollectionFormats;
 
-
+    /**
+     * A class holding information about a collection of names (usually file names) with a numerical token
+     * Each element of the collection consist of the head, a numerical index and a tail.
+     */
     class Collection {
         // TODO 
-        //  - implement iterator interface (Boost or std?)
+        //  - implement iterator interface (std?)
         //  - add formatting support
         //  - add operators: + - <<
+        //  - add insertion/removal
         //  - add cache format and holes and invalidation mecanism
+        //  - support variable padding
 
         // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
         
