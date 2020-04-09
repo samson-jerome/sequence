@@ -1,6 +1,8 @@
+#pragma once
 /***
- *
+ * \file
  */
+
 #ifndef COLLECTION_H
 #define COLLECTION_H
 
@@ -16,7 +18,7 @@ using namespace fmt::literals;
 namespace sequence {
 
     /**
-     * A contigious section of frames.
+     * \brief A contiguous section of frames.
      */
     typedef struct Range{
         int start = 0;
@@ -25,7 +27,9 @@ namespace sequence {
         bool isSingleFrame=false;
     } Range;
 
-    // Predefined string sequence formatting
+    /**
+     * \brief Predefined string sequence formatting
+     */
     typedef struct CollectionFormats {
         std::string buf = "{head}[{ranges}]{tail}";
         std::string rv = "{head}{#}{tail} {ranges}";
@@ -34,11 +38,17 @@ namespace sequence {
     } CollectionFormats;
 
     /**
-     * A class holding information about a collection of names (usually file names) with a numerical token
-     * Each element of the collection consist of the head, a numerical index and a tail.
+     * \class Collection
+     * 
+     * \brief 
+     * A class holding information about a collection of names with a numerical 
+     * token
+     * 
+     * Each element of the collection consist of the head, a numerical index and
+     * a tail.
      */
     class Collection {
-        // TODO 
+        // @todo 
         //  - implement iterator interface (std?)
         //  - add formatting support
         //  - add operators: + - <<

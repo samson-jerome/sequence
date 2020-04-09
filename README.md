@@ -27,3 +27,8 @@ having a numerical token as a collection.
 # backlog
 * add flag to consider or ignore single frame collection
 * support variable padding
+
+# References
+* https://api.csswg.org/bikeshed/?force=1&url=https://raw.githubusercontent.com/vector-of-bool/pitchfork/develop/data/spec.bs#submod.root
+* https://opensource.org/licenses/MIT
+* https://exhale.readthedocs.io/en/latest/mastering_doxygen.html
