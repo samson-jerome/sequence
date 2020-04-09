@@ -1,3 +1,6 @@
+/***
+ *
+ */
 #ifndef COLLECTION_H
 #define COLLECTION_H
 
@@ -6,14 +9,15 @@
 #include <vector>
 #include <deque>
 
-//#include <boost/algorithm/string/join.hpp>
 #include "fmt/format.h"
 
-// enum pattern {}
 using namespace fmt::literals;
 
 namespace sequence {
 
+    /**
+     * A contigious section of frames.
+     */
     typedef struct Range{
         int start = 0;
         int end = 0;
@@ -21,7 +25,7 @@ namespace sequence {
         bool isSingleFrame=false;
     } Range;
 
-
+    // Predefined string sequence formatting
     typedef struct CollectionFormats {
         std::string buf = "{head}[{ranges}]{tail}";
         std::string rv = "{head}{#}{tail} {ranges}";
@@ -29,20 +33,25 @@ namespace sequence {
 
     } CollectionFormats;
 
-
+    /**
+     * A class holding information about a collection of names (usually file names) with a numerical token
+     * Each element of the collection consist of the head, a numerical index and a tail.
+     */
     class Collection {
         // TODO 
-        //  - implement iterator interface (Boost or std?)
+        //  - implement iterator interface (std?)
         //  - add formatting support
         //  - add operators: + - <<
+        //  - add insertion/removal
         //  - add cache format and holes and invalidation mecanism
+        //  - support variable padding
 
         // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
         
-        std::vector<int> m_indexes;
-        std::string m_head;
-        std::string m_tail;
-        int m_padding;
+        std::vector<int> m_indexes; //< vector of numerical indexes
+        std::string m_head;         //< head part of the collection
+        std::string m_tail;         //< tail part of the collection
+        int m_padding;              //< size of zero-padded indexes
 
         std::vector<int> m_holes;
         std::deque<Range> m_ranges;
@@ -74,7 +83,11 @@ namespace sequence {
         int padding() const;
         void setPadding(int);
 
-        std::vector<std::string> getFileList() const;
+        /**
+         * Use collection details to express each item name individually
+         * @return the list of all expanded names
+         */
+        std::vector<std::string> getItems() const;
     protected:
         void _findHoles();
         // void _findRanges();

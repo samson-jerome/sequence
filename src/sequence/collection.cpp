@@ -121,7 +121,7 @@ std::string Collection::format() {
         "head"_a=m_head, "range"_a=fullRange, "tail"_a=m_tail);
 }
 
-std::vector<std::string> Collection::getFileList() const{
+std::vector<std::string> Collection::getItems() const{
     std::vector<std::string> result;
     for(auto i : m_indexes){
         result.push_back(fmt::format("{head}{range}{tail}",  
