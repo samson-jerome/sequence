@@ -1,6 +1,6 @@
 
 # Build tests
-add_executable (tests tests_main.cpp common_operations.cpp)
+add_executable (tests "tests_main.cpp" "common_operations.cpp" "using_collection.cpp")
 
 # Note, using shared lib with MSVC
 # https://gernotklingler.com/blog/creating-using-shared-libraries-different-compilers-different-operating-systems/
