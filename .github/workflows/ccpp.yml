@@ -13,9 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: INFO: OS
+    - name: "INFO: OS"
       run: uname -a
-    - name: INFO: gcc
+    - name: "INFO: gcc"
       run: gcc --version
-    - name: INFO: cmake
+    - name: "INFO: cmake"
       run: cmake --version
