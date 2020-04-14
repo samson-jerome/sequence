@@ -19,3 +19,12 @@ jobs:
       run: gcc --version
     - name: "INFO: cmake"
       run: cmake --version
+
+    - name: "Init submodules"
+      run: cd external && git submodule init && git submodule update && cd ..
+
+    - name: "Build sequence"
+      run: cmake -S . -B build && cmake --build build
+
+    - name: "Run tests"
+      run: ./build/bin/tests
