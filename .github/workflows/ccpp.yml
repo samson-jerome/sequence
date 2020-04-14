@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: INFO: OS
+      run: uname -a
+    - name: INFO: gcc
+      run: gcc --version
+    - name: INFO: cmake
+      run: cmake --version
