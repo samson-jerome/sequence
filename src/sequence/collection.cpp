@@ -83,53 +83,95 @@ void Collection::setPadding(int padding) {
     throw std::invalid_argument("padding cannot be negative");
 }
 
-
+// TODO update to be similar to print from fmt taking an stream or none to use stdout
 void Collection::info() {
     std::cout << "Collection construct" << std::endl;
     std::cout << "  head...: " << m_head << std::endl;
     std::cout << "  tail...: " << m_tail << std::endl;
+    std::cout << "  padding: " << m_padding << std::endl;
     std::cout << "  indexes: " ;
     for (std::vector<int>::const_iterator i = m_indexes.begin(); i != m_indexes.end(); ++i)
         std::cout << *i << ' ';
     std::cout << std::endl;
-    std::cout << "  holes: ";
+    std::cout << "  holes..: ";
     for (std::vector<int>::const_iterator i = m_holes.begin(); i != m_holes.end(); ++i)
         std::cout << *i << ' ';
     std::cout << std::endl;
 }
 
+// void Collection::print(format=CollectionFormats.default) {
+
+// }
+
 // std::string Collection::format(const std::string &format) {
 //     return format;
 // }
 
+/**
+ * Formats returns a string with information about the current collection 
+ * formatted using the desired pattern (default head.[1:10].ext)
+ * \return a string
+*/
 std::string Collection::format() {
     std::string fullRange = "";
 
     for(Range r : m_ranges){
         if(r.isSingleFrame) {
-            fullRange += std::to_string(r.start) + ",";
+            fullRange += fmt::format("{index:0>{padding}}", "index"_a=r.start,
+                "padding"_a=m_padding) + ",";
         } else {
-            auto val = (r.step==1) ? 
-                std::to_string(r.start) + ":" + std::to_string(r.end) :
-                std::to_string(r.start) + ":" + std::to_string(r.end) + "x" + std::to_string(r.step);
+            std::string val;
+            if(r.step == 1){
+                val = fmt::format("{start:0>{padding}}:{end:0>{padding}}", "start"_a=r.start, "end"_a=r.end,
+                    "padding"_a=m_padding);
+            } else {
+                val = fmt::format("{start:0>{padding}}:{end:0>{padding}}x{step}", "start"_a=r.start, "end"_a=r.end,
+                    "step"_a=r.step, "padding"_a=m_padding);
+            }
+            // auto val = (r.step==1) ? 
+            //     std::to_string(r.start) + ":" + std::to_string(r.end) :
+            //     std::to_string(r.start) + ":" + std::to_string(r.end) + "x" + std::to_string(r.step);
             fullRange += val + ",";
         }
     }
     fullRange.erase(fullRange.size() - 1);
 
-    return fmt::format("{head}[{range}]{tail}",  
-        "head"_a=m_head, "range"_a=fullRange, "tail"_a=m_tail);
+    return fmt::format("{head}[{range:0<{padding}}]{tail}",  
+        "head"_a=m_head, "range"_a=fullRange, "tail"_a=m_tail,
+        "padding"_a=m_padding);
 }
 
+
+/**
+ * Use collection details to express each item name individually
+ * \return the list of all expanded names
+ */
 std::vector<std::string> Collection::getItems() const{
     std::vector<std::string> result;
     for(auto i : m_indexes){
-        result.push_back(fmt::format("{head}{range}{tail}",  
-            "head"_a=m_head, "range"_a=i, "tail"_a=m_tail));
+        result.push_back(fmt::format("{head}{range:0>{padding}}{tail}",  
+            "head"_a=m_head, "range"_a=i, "tail"_a=m_tail,
+            "padding"_a=m_padding));
     }
     return result;
 }
 
+/**
+ * Retrieve an individual name for a given index
+ * \param integer index of the item to retrieve
+ * \return the list of all expanded names
+ * \throw OutOfBoundException if the given index cannot be found
+ */
+std::string Collection::getItem(int index) const{
+    std::string result;
+    if( (index < m_indexes.front()) || (m_indexes.back() < index) ) {
+        // throw OutofBound();
+    }
+    result = fmt::format("{head}{range:0>{padding}}{tail}",  
+        "head"_a=m_head, "range"_a=index, "tail"_a=m_tail,
+        "padding"_a=m_padding);
+    return result;
+}
 
 /**
 Updates current collection to recreate the list of missing frames from the list 

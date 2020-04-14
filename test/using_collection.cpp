@@ -19,9 +19,17 @@ TEST_CASE("gettings items", "[collection]") {
     entries.push_back("seq.003.ext");
 
     tie(collections, remainders) = sequence::assemble(entries);
+    collections.at(0).info();
+ 
     items = collections.at(0).getItems();
-
+    cout << items.at(0) << endl;
+ 
     REQUIRE(items.at(0) == "seq.001.ext");
     REQUIRE(items.at(1) == "seq.002.ext");
     REQUIRE(items.at(2) == "seq.003.ext");
+
+    // cout << collections.at(0).getItem(2) << endl;
+    REQUIRE(collections.at(0).getItem(1) == "seq.001.ext");
+    REQUIRE(collections.at(0).getItem(2) == "seq.002.ext");
+    REQUIRE(collections.at(0).getItem(3) == "seq.003.ext");
 }

@@ -31,11 +31,16 @@ namespace sequence {
      * \brief Predefined string sequence formatting
      */
     typedef struct CollectionFormats {
-        std::string buf = "{head}[{ranges}]{tail}";
+        std::string defaut = "{head}[{ranges}]{tail}";
         std::string rv = "{head}{#}{tail} {ranges}";
-        std::string percent = "{head}{%04d}{tail} {ranges}";
+        std::string clique = "{head}{#}{tail} {ranges}";
+        std::string percent = "{head}{%d}{tail} {ranges}";
 
     } CollectionFormats;
+
+    namespace Format {
+        enum Format {natural, dash, clique, percent};
+    };
 
     /**
      * \class Collection
@@ -83,6 +88,10 @@ namespace sequence {
 
         std::string format();
         void info();
+        // void print(string format="");
+        // void print(CollectionFormats format=Format.natural);
+        // void print(stream, format=CollectionFormats.default);
+        
 
         std::string head() const;
         void setHead(std::string);
@@ -93,11 +102,10 @@ namespace sequence {
         int padding() const;
         void setPadding(int);
 
-        /**
-         * Use collection details to express each item name individually
-         * @return the list of all expanded names
-         */
+
         std::vector<std::string> getItems() const;
+        std::string getItem(int index) const;
+
     protected:
         void _findHoles();
         // void _findRanges();

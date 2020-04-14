@@ -16,7 +16,8 @@ having a numerical token as a collection.
 # Roadmap
 ## v0.3.0
 * support padding
-* allow frame insertion/removal
+* more constructors
+* Manipulating indexes, allow frame insertion/removal/update
 * support multiple formatting
 * full doc
 * better coverage

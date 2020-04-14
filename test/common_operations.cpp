@@ -57,7 +57,7 @@ TEST_CASE("assembling collections", "[assemble]") {
 
   // SECTION( "incomplete sequence" ) {
     cout << bbb.format() << " - padding: " << bbb.padding() <<endl;
-    REQUIRE(bbb.format() == "bbb.[1:2,5].ext");
+    REQUIRE(bbb.format() == "bbb.[001:002,005].ext");
     REQUIRE(bbb.count() == 3);
     REQUIRE(bbb.padding() == 3);
     REQUIRE(bbb.head() == "bbb.");
