@@ -6,6 +6,30 @@
 using std::cout;
 using std::endl;
 
+using sequence::Collection;
+using sequence::assemble;
+using sequence::parse;
+
+// --------------------------------------------------------------------------
+// Check remainders
+TEST_CASE("constructor", "[creation]") {
+//	Collection collection;
+//	collection = Collection();
+	
+//	REQUIRE(collection.count() == 0);
+//	REQUIRE(collection.head() == "");
+//	REQUIRE(collection.tail() == "");
+//	cout << "first:" << collection.first() << endl;
+	//REQUIRE(collection.first() == );
+
+	Collection collection = Collection("head.", ".tail", {1, 2, 3});
+	REQUIRE(collection.count() == 3);
+	REQUIRE(collection.head() == "head.");
+	REQUIRE(collection.tail() == ".tail");
+	REQUIRE(collection.first() == 1);
+	REQUIRE(collection.last() == 3);
+}
+
 // --------------------------------------------------------------------------
 // Check remainders
 TEST_CASE("assembling single files", "[assemble]") {
@@ -68,12 +92,11 @@ TEST_CASE("assembling collections", "[assemble]") {
 // --------------------------------------------------------------------------
 // Parsing
 TEST_CASE("parsing fails if not collection", "[parsing]") {
-  sequence::Collection collection;
   std::string entry;
 
   entry = "my_file.ext";
   try {
-    collection = sequence::parse(entry);
+	  Collection collection = sequence::parse(entry);
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(true);
@@ -84,23 +107,21 @@ TEST_CASE("parsing fails if not collection", "[parsing]") {
   }
 }
 TEST_CASE("Parsing successs with various correct formats"){
-  sequence::Collection seq;
   std::vector<std::string> entries;
 
   REQUIRE(sequence::parse("frame.%04d.exr [1050-1080]").format() == "frame.[1050:1080].exr");
-  //REQUIRE(sequence::parse("frame%03d.tga [001-100]").format() == "frame[001:100].tga");
+  REQUIRE(sequence::parse("frame%03d.tga [001-100]").format() == "frame[001:100].tga");
 
   cout << endl;
 
 }
 
 TEST_CASE("parsing success", "[parsing]") {
-  sequence::Collection collection;
   std::string entry;
 
   entry = "my_file.%04d.ext [1-10]";
   try {
-    collection = sequence::parse(entry);
+    Collection collection = sequence::parse(entry);
     cout << "result is: " << collection.format() << endl;
     REQUIRE(collection.count() == 10);
     REQUIRE(collection.first() == 1);
@@ -118,7 +139,7 @@ TEST_CASE("parsing success", "[parsing]") {
 
   entry = "my_file.%4d.ext [1-10]";
   try {
-    collection = sequence::parse(entry);
+    Collection collection = sequence::parse(entry);
     cout << "result is: " << collection.format() << endl;
 
     REQUIRE(collection.count() == 10);
@@ -140,12 +161,11 @@ TEST_CASE("parsing success", "[parsing]") {
 }
 
 TEST_CASE("parsing failures on various wrong collections", "[parsing]") {
-  sequence::Collection collection;
   std::string entry;
 
   entry = "my_file.%04.ext [1-10]";
   try {
-    collection = sequence::parse(entry);
+	Collection collection = sequence::parse(entry);
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(true);

@@ -2,11 +2,13 @@
 
 using namespace sequence;
 
-Collection::Collection() {
-    std::vector<int> m_indexes = {};
-    std::string m_head = "";
-    std::string m_tail = "";
-}
+//Collection::Collection() {
+//    m_indexes = {};
+//	m_holes = {};
+//	m_head = "";
+//    m_tail = "";
+//	m_padding = 0;
+//}
 
 Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indexes) 
     :m_head(head), m_tail(tail), m_indexes(indexes)
@@ -27,6 +29,9 @@ int Collection::count() {
 }
 
 int Collection::first() {
+	if (m_indexes.empty()) {
+		throw "Empty collection";
+	}
     return this->m_indexes.front();
 }
 
@@ -56,6 +61,13 @@ void Collection::insert(int frame) {
     // Recreate the ranges
     this->_separate();
 }
+void Collection::insert(std::vector<int> frames_list) {}
+
+void Collection::remove(int frame) {}
+void Collection::remove(std::vector<int> frames_list) {}
+void Collection::update(int frame) {}
+void Collection::update(std::vector<int> frames_list) {}
+
 
 std::string Collection::head() const{
     return m_head;

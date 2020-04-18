@@ -33,3 +33,10 @@ TEST_CASE("gettings items", "[collection]") {
     REQUIRE(collections.at(0).getItem(2) == "seq.002.ext");
     REQUIRE(collections.at(0).getItem(3) == "seq.003.ext");
 }
+
+// --------------------------------------------------------------------------
+// 
+TEST_CASE("inserting/removing items", "[collection]") {
+	vector<sequence::Collection> collections;
+
+}

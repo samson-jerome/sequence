@@ -75,7 +75,7 @@ namespace sequence {
         // std::string m_cached_holes;
 
     public:
-        Collection();
+        //Collection();
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
 
@@ -84,7 +84,12 @@ namespace sequence {
         int count();
         int first();
         int last();
-        void insert(int);
+        void insert(int frame);
+		void insert(std::vector<int> frames_list);
+		void remove(int frame);
+		void remove(std::vector<int> frames_list);
+		void update(int frame);
+		void update(std::vector<int> frames_list);
 
         std::string format();
         void info();
