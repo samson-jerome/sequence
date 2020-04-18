@@ -10,33 +10,54 @@ using namespace sequence;
 //	m_padding = 0;
 //}
 
-Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indexes) 
-    :m_head(head), m_tail(tail), m_indices(indexes)
+Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indices) 
+    :m_head(head), m_tail(tail)
 {
+    m_indices.insert(indices.begin(), indices.end());
     this->_findHoles();
     this->_separate();
 }
 
-Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding)
-    :m_head(head), m_tail(tail), m_indices(indexes), m_padding(padding)
+Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end)
+    :m_head(head), m_tail(tail)
 {
+    for (auto i = start; ++i; i < end) {
+        m_indices.insert(i);
+    }
+    this->_findHoles();
+    this->_separate();
+}
+
+Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> & indices, const int padding)
+    :m_head(head), m_tail(tail), m_padding(padding)
+{
+    m_indices.insert(indices.begin(), indices.end());
+
+    this->_findHoles();
+    this->_separate();
+}
+
+Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding) {
+    for (auto i = start; ++i; i < end) {
+        m_indices.insert(i);
+    }
     this->_findHoles();
     this->_separate();
 }
 
 int Collection::count() {
-    return this->m_indices.size();
+    return m_indices.size();
 }
 
 int Collection::first() {
 	if (m_indices.empty()) {
 		throw "Empty collection";
 	}
-    return this->m_indices.front();
+    return *(m_indices.begin());
 }
 
 int Collection::last() {
-    return this->m_indices.back();
+    return *(m_indices.end());
 }
 
 // http://www.cplusplus.com/reference/set/set/
@@ -102,7 +123,7 @@ void Collection::info() {
     std::cout << "  tail...: " << m_tail << std::endl;
     std::cout << "  padding: " << m_padding << std::endl;
     std::cout << "  indexes: " ;
-    for (std::vector<int>::const_iterator i = m_indices.begin(); i != m_indices.end(); ++i)
+    for (std::set<int>::const_iterator i = m_indices.begin(); i != m_indices.end(); ++i)
         std::cout << *i << ' ';
     std::cout << std::endl;
     std::cout << "  holes..: ";
@@ -170,21 +191,48 @@ std::vector<std::string> Collection::getItems() const{
 
 /**
  * Retrieve an individual name for a given index
- * \param integer index of the item to retrieve
- * \return the list of all expanded names
- * \throw OutOfBoundException if the given index cannot be found
+ * \param integer value of the frame to retrieve
+ * \return A pair of string asnd boolean. The string holds the expanded name if 
+ *  found or an empty string. The boolean indicate a successful search
  */
-std::string Collection::getItem(int index) const{
-    std::string result;
-    if( (index < m_indices.front()) || (m_indices.back() < index) ) {
-        // throw OutofBound();
+std::pair<std::string, bool> Collection::getItem(int frame) const{
+
+    std::pair<std::string, bool> result;
+    if( (frame < *(m_indices.begin())) || (*(m_indices.end()) < frame) ) {
+        result.second = false;
     }
-    // @TODO use m_indexes instead!!!
-    result = fmt::format("{head}{range:0>{padding}}{tail}",  
-        "head"_a=m_head, "range"_a=index, "tail"_a=m_tail,
-        "padding"_a=m_padding);
+    else {
+        result.first = fmt::format("{head}{range:0>{padding}}{tail}",
+            "head"_a = m_head, "range"_a = frame, "tail"_a = m_tail,
+            "padding"_a = m_padding);
+        result.second = false;
+    }
     return result;
 }
+
+/**
+ * Retrieve an individual name given its position in frames list
+ * \param integer value of the index in the collection
+ * \return A pair of string and boolean. The string holds the expanded name if
+ *  found or an empty string. The boolean indicate a successful search
+ */
+std::pair<std::string, bool> Collection::getNthItem(int index) const {
+    std::pair<std::string, bool> result;
+    if (m_indices.size() > index)
+    {
+        int frame = *(std::next(m_indices.begin(), index));
+        result.first = fmt::format("{head}{range:0>{padding}}{tail}",
+            "head"_a = m_head, "range"_a = frame, "tail"_a = m_tail,
+            "padding"_a = m_padding);
+
+        result.second = true;
+    }
+    else
+        result.second = false;
+
+    return result;
+}
+
 
 /**
 Updates current collection to recreate the list of missing frames from the list 
@@ -195,10 +243,10 @@ void Collection::_findHoles() {
     // If length > 0
     m_holes.clear();
 
-    int prev = m_indices.at(0);
+    int prev = *(m_indices.begin());
     int current;
 
-    for (std::vector<int>::const_iterator i = m_indices.begin()+1; i != m_indices.end(); ++i) {
+    for (std::set<int>::const_iterator i = m_indices.begin()++; i != m_indices.end(); ++i) {
         current = *i;
         while (current-prev != 1) {
             m_holes.push_back(++prev);
@@ -222,7 +270,7 @@ void Collection::_separate(){
 
     else if (m_indices.size() == 1) {
         r.isSingleFrame = true;
-        r.start = m_indices.at(0);
+        r.start = *(m_indices.begin());
         r.end = r.start;
         r.step = 1;
 
@@ -234,13 +282,13 @@ void Collection::_separate(){
         // 2 indexes collection are always treated as 2 single frames if not consecutives
         // TODO if not consistent when more than 3 where list is: 1,2,8 for instance > considere it as a range
         r.isSingleFrame = true;
-        r.start = m_indices.at(0);
+        r.start = *(m_indices.begin());
         r.end = r.start;
         r.step = 1;
         m_ranges.push_back(r);
 
         r.isSingleFrame = true;
-        r.start = m_indices.at(1);
+        r.start = *(m_indices.begin()++);
         r.end = r.start;
         r.step = 1;
         
@@ -251,13 +299,13 @@ void Collection::_separate(){
     // ------------------------------------------------------------------------------------
     // Handle a vector of more than 2 items
     // cout << "Separate more than 2 elems:" << endl;
-    std::vector<int>::iterator it;
+    std::set<int>::iterator it;
 
     // Init first range
     r.isSingleFrame = true;
-    r.start = m_indices.at(0);
-    r.end = m_indices.at(0);
-    r.step = m_indices.at(1) - m_indices.at(0);
+    r.start = *(m_indices.begin());
+    r.end = *(m_indices.begin());
+    r.step = *(m_indices.begin()++) - *(m_indices.begin());
 
     // TOFIX accessing random pos suitable for vector?
     for(it = m_indices.begin(); it != m_indices.end()-2; it++ )    {
@@ -265,7 +313,7 @@ void Collection::_separate(){
         // cout << *it << endl; 
 
         auto current = *it;
-        auto next = *(it+1);
+        auto next = *(it++);
 
         if(next-current == r.step) {
             // cout << "same step: " << r.step << endl; 
@@ -278,7 +326,7 @@ void Collection::_separate(){
             m_ranges.push_back(r);
             // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
 
-            if(it+1 != m_indices.end()){
+            if(it+ != m_indices.end()){
                 r.isSingleFrame = true;
                 r.start = next;
                 r.end = next;
@@ -296,7 +344,7 @@ void Collection::_separate(){
     // cout << "after loop range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
 
     // TOFIX accessing random pos suitable for vector?
-    int last = m_indices.back();
+    int last = *(m_indices.end());
     int beforeLast = m_indices.at(m_indices.size()-2);
 
     // cout << "beforeLast = " << beforeLast << endl;

@@ -134,20 +134,6 @@ Collection sequence::parse(string entry) {
         start = stoi(match.str(4));
         end = stoi(match.str(5));
 
-        // cout << "string matches:" << endl;
-        // cout << "head = " << match.str(1) << endl;
-        // cout << "padding = " << match.str(2) << endl;
-        // cout << "tail = " << match.str(3) << endl;
-        // cout << "start = " << match.str(4) << endl;
-        // cout << "end = " << match.str(5) << endl;
-
-        // cout << "values:" << endl;
-        // cout << "head = " << head << endl;
-        // cout << "padding = " << padding << endl;
-        // cout << "tail = " << tail << endl;
-        // cout << "start = " << start << endl;
-        // cout << "end = " << end << endl;
-
         vector<int> indexes;
         for (int i = start; i <= end; i++) {
             indexes.push_back(i);

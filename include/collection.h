@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <deque>
+#include <set>
 
 #include "fmt/format.h"
 
@@ -63,7 +64,7 @@ namespace sequence {
 
         // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
         
-        std::vector<int> m_indices; //< vector of numerical indexes
+        std::set<int> m_indices;    //< set of numerical indexes
         std::string m_head;         //< head part of the collection
         std::string m_tail;         //< tail part of the collection
         int m_padding;              //< size of zero-padded indexes
@@ -77,7 +78,9 @@ namespace sequence {
     public:
         //Collection();
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
+        Collection(const std::string& head, const std::string& tail, const int start, const int end);
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
+        Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding);
 
         // std::string toString(const std::string &format=DEFAULT_FORMAT);
         // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
@@ -91,12 +94,14 @@ namespace sequence {
 		void update(int frame);
 		void update(std::vector<int> frames_list);
 
+        /**
+         * \brief Format description
+         */
         std::string format();
         void info();
         // void print(string format="");
         // void print(CollectionFormats format=Format.natural);
         // void print(stream, format=CollectionFormats.default);
-        
 
         std::string head() const;
         void setHead(std::string);
@@ -107,9 +112,11 @@ namespace sequence {
         int padding() const;
         void setPadding(int);
 
-
         std::vector<std::string> getItems() const;
-        std::string getItem(int index) const;
+        std::pair<std::string, bool> getItem(int frame) const;
+
+        std::pair<std::string, bool> getNthItem(int index) const;
+
 
     protected:
         void _findHoles();
