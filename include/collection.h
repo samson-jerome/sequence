@@ -63,7 +63,7 @@ namespace sequence {
 
         // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
         
-        std::vector<int> m_indexes; //< vector of numerical indexes
+        std::vector<int> m_indices; //< vector of numerical indexes
         std::string m_head;         //< head part of the collection
         std::string m_tail;         //< tail part of the collection
         int m_padding;              //< size of zero-padded indexes

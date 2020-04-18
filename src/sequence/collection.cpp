@@ -11,32 +11,32 @@ using namespace sequence;
 //}
 
 Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indexes) 
-    :m_head(head), m_tail(tail), m_indexes(indexes)
+    :m_head(head), m_tail(tail), m_indices(indexes)
 {
     this->_findHoles();
     this->_separate();
 }
 
 Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding)
-    :m_head(head), m_tail(tail), m_indexes(indexes), m_padding(padding)
+    :m_head(head), m_tail(tail), m_indices(indexes), m_padding(padding)
 {
     this->_findHoles();
     this->_separate();
 }
 
 int Collection::count() {
-    return this->m_indexes.size();
+    return this->m_indices.size();
 }
 
 int Collection::first() {
-	if (m_indexes.empty()) {
+	if (m_indices.empty()) {
 		throw "Empty collection";
 	}
-    return this->m_indexes.front();
+    return this->m_indices.front();
 }
 
 int Collection::last() {
-    return this->m_indexes.back();
+    return this->m_indices.back();
 }
 
 // http://www.cplusplus.com/reference/set/set/
@@ -102,7 +102,7 @@ void Collection::info() {
     std::cout << "  tail...: " << m_tail << std::endl;
     std::cout << "  padding: " << m_padding << std::endl;
     std::cout << "  indexes: " ;
-    for (std::vector<int>::const_iterator i = m_indexes.begin(); i != m_indexes.end(); ++i)
+    for (std::vector<int>::const_iterator i = m_indices.begin(); i != m_indices.end(); ++i)
         std::cout << *i << ' ';
     std::cout << std::endl;
     std::cout << "  holes..: ";
@@ -160,7 +160,7 @@ std::string Collection::format() {
  */
 std::vector<std::string> Collection::getItems() const{
     std::vector<std::string> result;
-    for(auto i : m_indexes){
+    for(auto i : m_indices){
         result.push_back(fmt::format("{head}{range:0>{padding}}{tail}",  
             "head"_a=m_head, "range"_a=i, "tail"_a=m_tail,
             "padding"_a=m_padding));
@@ -176,7 +176,7 @@ std::vector<std::string> Collection::getItems() const{
  */
 std::string Collection::getItem(int index) const{
     std::string result;
-    if( (index < m_indexes.front()) || (m_indexes.back() < index) ) {
+    if( (index < m_indices.front()) || (m_indices.back() < index) ) {
         // throw OutofBound();
     }
     // @TODO use m_indexes instead!!!
@@ -195,10 +195,10 @@ void Collection::_findHoles() {
     // If length > 0
     m_holes.clear();
 
-    int prev = m_indexes.at(0);
+    int prev = m_indices.at(0);
     int current;
 
-    for (std::vector<int>::const_iterator i = m_indexes.begin()+1; i != m_indexes.end(); ++i) {
+    for (std::vector<int>::const_iterator i = m_indices.begin()+1; i != m_indices.end(); ++i) {
         current = *i;
         while (current-prev != 1) {
             m_holes.push_back(++prev);
@@ -216,13 +216,13 @@ void Collection::_separate(){
     Range r;
     m_ranges.clear();
 
-    if(m_indexes.empty()) {
+    if(m_indices.empty()) {
         return;
     } 
 
-    else if (m_indexes.size() == 1) {
+    else if (m_indices.size() == 1) {
         r.isSingleFrame = true;
-        r.start = m_indexes.at(0);
+        r.start = m_indices.at(0);
         r.end = r.start;
         r.step = 1;
 
@@ -230,17 +230,17 @@ void Collection::_separate(){
         return;
     }
 
-    else if (m_indexes.size() == 2) {
+    else if (m_indices.size() == 2) {
         // 2 indexes collection are always treated as 2 single frames if not consecutives
         // TODO if not consistent when more than 3 where list is: 1,2,8 for instance > considere it as a range
         r.isSingleFrame = true;
-        r.start = m_indexes.at(0);
+        r.start = m_indices.at(0);
         r.end = r.start;
         r.step = 1;
         m_ranges.push_back(r);
 
         r.isSingleFrame = true;
-        r.start = m_indexes.at(1);
+        r.start = m_indices.at(1);
         r.end = r.start;
         r.step = 1;
         
@@ -255,12 +255,12 @@ void Collection::_separate(){
 
     // Init first range
     r.isSingleFrame = true;
-    r.start = m_indexes.at(0);
-    r.end = m_indexes.at(0);
-    r.step = m_indexes.at(1) - m_indexes.at(0);
+    r.start = m_indices.at(0);
+    r.end = m_indices.at(0);
+    r.step = m_indices.at(1) - m_indices.at(0);
 
     // TOFIX accessing random pos suitable for vector?
-    for(it = m_indexes.begin(); it != m_indexes.end()-2; it++ )    {
+    for(it = m_indices.begin(); it != m_indices.end()-2; it++ )    {
 
         // cout << *it << endl; 
 
@@ -278,7 +278,7 @@ void Collection::_separate(){
             m_ranges.push_back(r);
             // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
 
-            if(it+1 != m_indexes.end()){
+            if(it+1 != m_indices.end()){
                 r.isSingleFrame = true;
                 r.start = next;
                 r.end = next;
@@ -296,8 +296,8 @@ void Collection::_separate(){
     // cout << "after loop range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
 
     // TOFIX accessing random pos suitable for vector?
-    int last = m_indexes.back();
-    int beforeLast = m_indexes.at(m_indexes.size()-2);
+    int last = m_indices.back();
+    int beforeLast = m_indices.at(m_indices.size()-2);
 
     // cout << "beforeLast = " << beforeLast << endl;
     // cout << "last = " << last << endl;
