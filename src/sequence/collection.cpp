@@ -179,6 +179,7 @@ std::string Collection::getItem(int index) const{
     if( (index < m_indexes.front()) || (m_indexes.back() < index) ) {
         // throw OutofBound();
     }
+    // @TODO use m_indexes instead!!!
     result = fmt::format("{head}{range:0>{padding}}{tail}",  
         "head"_a=m_head, "range"_a=index, "tail"_a=m_tail,
         "padding"_a=m_padding);

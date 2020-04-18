@@ -13,14 +13,6 @@ using sequence::parse;
 // --------------------------------------------------------------------------
 // Check remainders
 TEST_CASE("constructor", "[creation]") {
-//	Collection collection;
-//	collection = Collection();
-	
-//	REQUIRE(collection.count() == 0);
-//	REQUIRE(collection.head() == "");
-//	REQUIRE(collection.tail() == "");
-//	cout << "first:" << collection.first() << endl;
-	//REQUIRE(collection.first() == );
 
 	Collection collection = Collection("head.", ".tail", {1, 2, 3});
 	REQUIRE(collection.count() == 3);
@@ -28,6 +20,18 @@ TEST_CASE("constructor", "[creation]") {
 	REQUIRE(collection.tail() == ".tail");
 	REQUIRE(collection.first() == 1);
 	REQUIRE(collection.last() == 3);
+
+    collection = Collection("head.", ".tail", { 1, 2, 3 }, 4);
+    REQUIRE(collection.count() == 3);
+    REQUIRE(collection.head() == "head.");
+    REQUIRE(collection.tail() == ".tail");
+    REQUIRE(collection.padding() == 4);
+    REQUIRE(collection.first() == 1);
+    REQUIRE(collection.last() == 3);
+
+    REQUIRE(collection.getItem(1) == "head.0001.tail");
+    REQUIRE(collection.getItem(2) == "head.0002.tail");
+    REQUIRE(collection.getItem(3) == "head.0003.tail");
 }
 
 // --------------------------------------------------------------------------
