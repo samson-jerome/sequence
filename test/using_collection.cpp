@@ -29,9 +29,9 @@ TEST_CASE("gettings items", "[collection]") {
     REQUIRE(items.at(2) == "seq.003.ext");
 
     // cout << collections.at(0).getItem(2) << endl;
-    REQUIRE(collections.at(0).getItem(1) == "seq.001.ext");
-    REQUIRE(collections.at(0).getItem(2) == "seq.002.ext");
-    REQUIRE(collections.at(0).getItem(3) == "seq.003.ext");
+    REQUIRE(collections.at(0).getItem(1).first == "seq.001.ext");
+    REQUIRE(collections.at(0).getItem(2).first == "seq.002.ext");
+    REQUIRE(collections.at(0).getItem(3).first == "seq.003.ext");
 }
 
 // --------------------------------------------------------------------------

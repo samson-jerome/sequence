@@ -2,18 +2,22 @@
 
 using namespace sequence;
 
-//Collection::Collection() {
-//    m_indexes = {};
-//	m_holes = {};
-//	m_head = "";
-//    m_tail = "";
-//	m_padding = 0;
-//}
+Collection::Collection(const sequence::Collection &c) {
+    // m_indices.insert(c.m_indices.begin(), c.m_indices.end());
+	// m_holes = c.m_holes;
+    m_head = c.m_head;
+    m_tail = c.m_tail;
+	m_padding = c.m_padding;
+    // m_ranges = c.m_ranges;
+    this->_findHoles();
+    this->_separate();
+
+}
 
 Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indices) 
     :m_head(head), m_tail(tail)
 {
-    m_indices.insert(indices.begin(), indices.end());
+    m_indices = std::set<int> (indices.begin(), indices.end());
     this->_findHoles();
     this->_separate();
 }
@@ -21,7 +25,8 @@ Collection::Collection(const std::string &head, const std::string &tail, const s
 Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end)
     :m_head(head), m_tail(tail)
 {
-    for (auto i = start; ++i; i < end) {
+    for (auto i = start; i <= end; ++i) {
+        cout << i << " " << endl;
         m_indices.insert(i);
     }
     this->_findHoles();
@@ -31,14 +36,15 @@ Collection::Collection(const std::string& head, const std::string& tail, const i
 Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> & indices, const int padding)
     :m_head(head), m_tail(tail), m_padding(padding)
 {
-    m_indices.insert(indices.begin(), indices.end());
+    m_indices = std::set<int> (indices.begin(), indices.end());
 
     this->_findHoles();
     this->_separate();
 }
 
 Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding) {
-    for (auto i = start; ++i; i < end) {
+    for (auto i = start; i <= end; ++i) {
+        cout << i << " " << endl;
         m_indices.insert(i);
     }
     this->_findHoles();
@@ -192,19 +198,20 @@ std::vector<std::string> Collection::getItems() const{
 /**
  * Retrieve an individual name for a given index
  * \param integer value of the frame to retrieve
- * \return A pair of string asnd boolean. The string holds the expanded name if 
+ * \return Pair of string and bool. The string holds the expanded name if 
  *  found or an empty string. The boolean indicate a successful search
  */
 std::pair<std::string, bool> Collection::getItem(int frame) const{
-
     std::pair<std::string, bool> result;
-    if( (frame < *(m_indices.begin())) || (*(m_indices.end()) < frame) ) {
-        result.second = false;
+    auto frame_it = m_indices.find(frame);
+
+    if( frame_it != m_indices.end() ) {
+        result.first = fmt::format("{head}{range:0>{padding}}{tail}",
+            "head"_a = m_head, "range"_a = *(frame_it), "tail"_a = m_tail,
+            "padding"_a = m_padding);
+        result.second = true;
     }
     else {
-        result.first = fmt::format("{head}{range:0>{padding}}{tail}",
-            "head"_a = m_head, "range"_a = frame, "tail"_a = m_tail,
-            "padding"_a = m_padding);
         result.second = false;
     }
     return result;
@@ -259,7 +266,7 @@ void Collection::_findHoles() {
 Updates current collection to recreate the list of ranges from the list of 
 indices.
 */
-void Collection::_separate(){
+void Collection::_separate(int minimum_items){
 
     Range r;
     m_ranges.clear();
@@ -298,7 +305,7 @@ void Collection::_separate(){
 
     // ------------------------------------------------------------------------------------
     // Handle a vector of more than 2 items
-    // cout << "Separate more than 2 elems:" << endl;
+    cout << "Separate more than 2 elems:" << endl;
     std::set<int>::iterator it;
 
     // Init first range
@@ -308,30 +315,33 @@ void Collection::_separate(){
     r.step = *(m_indices.begin()++) - *(m_indices.begin());
 
     // TOFIX accessing random pos suitable for vector?
-    for(it = m_indices.begin(); it != m_indices.end()-2; it++ )    {
+    auto it_end = std::next(m_indices.begin(), m_indices.size()-2);
+    for(it = m_indices.begin(); it != it_end; it++ )    {
 
-        // cout << *it << endl; 
+        cout << *it << endl; 
 
         auto current = *it;
         auto next = *(it++);
 
         if(next-current == r.step) {
-            // cout << "same step: " << r.step << endl; 
+            cout << "same step: " << r.step << endl; 
             if(r.isSingleFrame) r.isSingleFrame = false;
             r.end = next;
             continue;
         }
         else {
-            // cout << "diff step: " << r.step << endl; 
+            cout << "diff step: " << r.step << endl; 
             m_ranges.push_back(r);
-            // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
+            cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
 
-            if(it+ != m_indices.end()){
+            // If we are sure the next element is not the last we can prep a
+            // new range
+            if(std::next(it) != m_indices.end()){
                 r.isSingleFrame = true;
                 r.start = next;
                 r.end = next;
-                r.step = *(it+2) - next;
-                // cout << "next range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
+                r.step = *(std::next(it,2)) - next;
+                cout << "next range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
             }
         }
     }
@@ -345,16 +355,16 @@ void Collection::_separate(){
 
     // TOFIX accessing random pos suitable for vector?
     int last = *(m_indices.end());
-    int beforeLast = m_indices.at(m_indices.size()-2);
+    int beforeLast = *(m_indices.rend()++);
 
-    // cout << "beforeLast = " << beforeLast << endl;
-    // cout << "last = " << last << endl;
+    cout << "beforeLast = " << beforeLast << endl;
+    cout << "last = " << last << endl;
 
     if(last-r.end == r.step) {
         r.end = last;
         if(r.isSingleFrame) r.isSingleFrame = false;
         m_ranges.push_back(r);
-        // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
+        cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
     }
     else{
         // r.step = last - beforeLast;

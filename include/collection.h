@@ -15,6 +15,8 @@
 #include "fmt/format.h"
 
 using namespace fmt::literals;
+using std::cout;
+using std::endl;
 
 namespace sequence {
 
@@ -76,7 +78,7 @@ namespace sequence {
         // std::string m_cached_holes;
 
     public:
-        //Collection();
+        Collection(const sequence::Collection &c);
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
         Collection(const std::string& head, const std::string& tail, const int start, const int end);
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
@@ -120,8 +122,7 @@ namespace sequence {
 
     protected:
         void _findHoles();
-        // void _findRanges();
-        void _separate();
+        void _separate(int minimum_items=1);
 
     };
 }
