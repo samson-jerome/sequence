@@ -112,6 +112,7 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 
 // ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
 // '{head}{padding}{tail} [{ranges}]'
+// @todo parse against multiple patterns
 Collection sequence::parse(string entry) {
 
     // cout << "entry = " << entry << endl;
@@ -138,7 +139,7 @@ Collection sequence::parse(string entry) {
         for (int i = start; i <= end; i++) {
             indexes.push_back(i);
         }
-        cout << endl;
+
         Collection coll(head, tail, indexes, padding);
         return coll;
     }

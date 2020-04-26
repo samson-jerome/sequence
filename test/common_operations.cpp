@@ -13,25 +13,69 @@ using sequence::parse;
 // --------------------------------------------------------------------------
 // Check remainders
 TEST_CASE("constructor", "[creation]") {
-    Collection collection = Collection("head.", ".tail", 1, 3);
-    // REQUIRE(collection.count() == 3);
-    // REQUIRE(collection.head() == "head.");
-    // REQUIRE(collection.tail() == ".tail");
-    // REQUIRE(collection.first() == 1);
-    // REQUIRE(collection.last() == 3);
 
-    // collection = Collection("head.", ".tail", { 1, 2, 3 }, 4);
-    // REQUIRE(collection.count() == 3);
-    // REQUIRE(collection.head() == "head.");
-    // REQUIRE(collection.tail() == ".tail");
-    // REQUIRE(collection.padding() == 4);
-    // REQUIRE(collection.first() == 1);
-    // REQUIRE(collection.last() == 3);
+    Collection collection1 = Collection("head.", ".tail", 1, 3);
+    REQUIRE(collection1.count() == 3);
+    REQUIRE(collection1.head() == "head.");
+    REQUIRE(collection1.tail() == ".tail");
+    REQUIRE(collection1.padding() == 0);
+    REQUIRE(collection1.first() == 1);
+    REQUIRE(collection1.last() == 3);
+    cout << collection1.format() << endl;
 
-    // REQUIRE(collection.getItem(1).first == "head.0001.tail");
-    // REQUIRE(collection.getItem(1).second == true);
-    // REQUIRE(collection.getItem(2).first == "head.0002.tail");
-    // REQUIRE(collection.getItem(3).first == "head.0003.tail");
+    Collection collection2 = Collection("head.", ".tail", 1, 5);
+    REQUIRE(collection2.count() == 5);
+    REQUIRE(collection2.head() == "head.");
+    REQUIRE(collection2.tail() == ".tail");
+    REQUIRE(collection2.padding() == 0);
+    REQUIRE(collection2.first() == 1);
+    REQUIRE(collection2.last() == 5);
+    cout << collection2.format() << endl;
+
+    Collection collection3 = Collection("head.", ".tail", 1, 6, 4);
+    REQUIRE(collection3.count() == 6);
+    REQUIRE(collection3.head() == "head.");
+    REQUIRE(collection3.tail() == ".tail");
+    REQUIRE(collection3.padding() == 4);
+    REQUIRE(collection3.first() == 1);
+    REQUIRE(collection3.last() == 6);
+    cout << collection3.format() << endl;
+
+    Collection collection4 = Collection("head.", ".tail", { 5, 6, 7 }, 4);
+    REQUIRE(collection4.count() == 3);
+    REQUIRE(collection4.head() == "head.");
+    REQUIRE(collection4.tail() == ".tail");
+    REQUIRE(collection4.padding() == 4);
+    REQUIRE(collection4.first() == 5);
+    REQUIRE(collection4.last() == 7);
+    cout << collection4.format() << endl;
+
+    Collection collection5 = Collection("head.", ".tail", {1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058 ,1059 ,1060 ,1061 ,1062 ,1063 ,1064 ,1065 ,1066 ,1067 ,1068 ,1069 ,1070 ,1071 ,1072 ,1073 ,1074 ,1075 ,1076 ,1077, 1078, 1079, 1080});
+    REQUIRE(collection5.count() == 31);
+    REQUIRE(collection5.head() == "head.");
+    REQUIRE(collection5.tail() == ".tail");
+    REQUIRE(collection5.padding() == 0);
+    REQUIRE(collection5.first() == 1050);
+    REQUIRE(collection5.last() == 1080);
+    cout << collection5.format() << endl;
+
+    // @todo add copy const test
+    Collection copy = collection5;
+    REQUIRE(copy.count() == 31);
+    REQUIRE(copy.head() == "head.");
+    REQUIRE(copy.tail() == ".tail");
+    REQUIRE(copy.padding() == 0);
+    REQUIRE(copy.first() == 1050);
+    REQUIRE(copy.last() == 1080);
+    cout << copy.format() << endl;
+
+    auto item = copy.getItem(1050);
+    REQUIRE(item.first == "head.1050.tail");
+    REQUIRE(item.second == true);
+
+    item = copy.getItem(1051);
+    REQUIRE(item.first == "head.1051.tail");
+    REQUIRE(item.second == true);
 }
 
 // --------------------------------------------------------------------------
@@ -75,22 +119,18 @@ TEST_CASE("assembling collections", "[assemble]") {
   sequence::Collection aaa = collections.at(0);
   sequence::Collection bbb = collections.at(1);
 
-  // SECTION( "complete sequence" ) {
-    cout << aaa.format() << " - padding: " << aaa.padding() <<endl;
-    REQUIRE(aaa.format() == "aaa.[1:4].ext");
-    REQUIRE(aaa.count() == 4);
-    REQUIRE(aaa.head() == "aaa.");
-    REQUIRE(aaa.tail() == ".ext");
-  // }
+  cout << aaa.format() << endl;
+  REQUIRE(aaa.format() == "aaa.[1:4].ext");
+  REQUIRE(aaa.count() == 4);
+  REQUIRE(aaa.head() == "aaa.");
+  REQUIRE(aaa.tail() == ".ext");
 
-  // SECTION( "incomplete sequence" ) {
-    cout << bbb.format() << " - padding: " << bbb.padding() <<endl;
-    REQUIRE(bbb.format() == "bbb.[001:002,005].ext");
-    REQUIRE(bbb.count() == 3);
-    REQUIRE(bbb.padding() == 3);
-    REQUIRE(bbb.head() == "bbb.");
-    REQUIRE(bbb.tail() == ".ext");
-  // }
+  cout << bbb.format() << endl;
+  REQUIRE(bbb.format() == "bbb.[001:002,005].ext");
+  REQUIRE(bbb.count() == 3);
+  REQUIRE(bbb.padding() == 3);
+  REQUIRE(bbb.head() == "bbb.");
+  REQUIRE(bbb.tail() == ".ext");
 }
 
 // --------------------------------------------------------------------------
@@ -141,14 +181,14 @@ TEST_CASE("parsing success", "[parsing]") {
     REQUIRE(false);
   }
 
-  entry = "my_file.%4d.ext [1-10]";
+  entry = "my_file.%4d.ext [11-20]";
   try {
     Collection collection = sequence::parse(entry);
     cout << "result is: " << collection.format() << endl;
 
     REQUIRE(collection.count() == 10);
-    REQUIRE(collection.first() == 1);
-    REQUIRE(collection.last() == 10);
+    REQUIRE(collection.first() == 11);
+    REQUIRE(collection.last() == 20);
     REQUIRE(collection.head() == "my_file.");
     REQUIRE(collection.tail() == ".ext");
   } 

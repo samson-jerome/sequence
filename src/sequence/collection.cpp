@@ -3,30 +3,35 @@
 using namespace sequence;
 
 Collection::Collection(const sequence::Collection &c) {
-    // m_indices.insert(c.m_indices.begin(), c.m_indices.end());
-	// m_holes = c.m_holes;
+    
+    for(auto frame : c.m_indices)
+        m_indices.insert(frame);
+
     m_head = c.m_head;
     m_tail = c.m_tail;
 	m_padding = c.m_padding;
-    // m_ranges = c.m_ranges;
-    this->_findHoles();
-    this->_separate();
 
+    for(auto frame : c.m_holes)
+        m_holes.push_back(frame);
+
+    for(auto range : c.m_ranges)
+        m_ranges.push_back(range);
 }
 
 Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indices) 
-    :m_head(head), m_tail(tail)
+    :m_head(head), m_tail(tail), m_padding(0)
 {
     m_indices = std::set<int> (indices.begin(), indices.end());
+    // cout << "indices = "; for(auto f:m_indices) {cout << f << " ";} cout << endl;
+
     this->_findHoles();
     this->_separate();
 }
 
 Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end)
-    :m_head(head), m_tail(tail)
+    :m_head(head), m_tail(tail), m_padding(0)
 {
     for (auto i = start; i <= end; ++i) {
-        cout << i << " " << endl;
         m_indices.insert(i);
     }
     this->_findHoles();
@@ -42,9 +47,10 @@ Collection::Collection(const std::string &head,const std::string &tail, const st
     this->_separate();
 }
 
-Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding) {
+Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding) 
+    :m_head(head), m_tail(tail), m_padding(padding)
+{
     for (auto i = start; i <= end; ++i) {
-        cout << i << " " << endl;
         m_indices.insert(i);
     }
     this->_findHoles();
@@ -63,7 +69,7 @@ int Collection::first() {
 }
 
 int Collection::last() {
-    return *(m_indices.end());
+    return *(m_indices.rbegin());
 }
 
 // http://www.cplusplus.com/reference/set/set/
@@ -202,6 +208,8 @@ std::vector<std::string> Collection::getItems() const{
  *  found or an empty string. The boolean indicate a successful search
  */
 std::pair<std::string, bool> Collection::getItem(int frame) const{
+    // @audit use exceptions of pair to return success?
+
     std::pair<std::string, bool> result;
     auto frame_it = m_indices.find(frame);
 
@@ -224,6 +232,8 @@ std::pair<std::string, bool> Collection::getItem(int frame) const{
  *  found or an empty string. The boolean indicate a successful search
  */
 std::pair<std::string, bool> Collection::getNthItem(int index) const {
+    // @audit use exceptions of pair to return success?
+        
     std::pair<std::string, bool> result;
     if (m_indices.size() > index)
     {
@@ -247,13 +257,16 @@ of indices.
 */
 void Collection::_findHoles() {
 
-    // If length > 0
+    // @audit Should we consider a global step on a collection and only collect
+    // holes that would be in this set?
+    // We currently consider that Ranges can have different steps...
+
     m_holes.clear();
 
     int prev = *(m_indices.begin());
     int current;
 
-    for (std::set<int>::const_iterator i = m_indices.begin()++; i != m_indices.end(); ++i) {
+    for (std::set<int>::const_iterator i = std::next(m_indices.begin()); i != m_indices.end(); ++i) {
         current = *i;
         while (current-prev != 1) {
             m_holes.push_back(++prev);
@@ -305,34 +318,42 @@ void Collection::_separate(int minimum_items){
 
     // ------------------------------------------------------------------------------------
     // Handle a vector of more than 2 items
-    cout << "Separate more than 2 elems:" << endl;
+    // cout << "Separate more than 2 elems:" << endl;
     std::set<int>::iterator it;
 
     // Init first range
     r.isSingleFrame = true;
     r.start = *(m_indices.begin());
     r.end = *(m_indices.begin());
-    r.step = *(m_indices.begin()++) - *(m_indices.begin());
+    r.step = *std::next(m_indices.begin()) - *(m_indices.begin());
+    // cout << "Initial Range = " << "[" << r.start << "-" << r.end << ":" << r.step << "]" << endl; 
 
-    // TOFIX accessing random pos suitable for vector?
+
+    // cout << "begin = " << *m_indices.begin() << endl; 
+    // cout << "end = " << *m_indices.end() << endl; 
+    // cout << "size = " << m_indices.size() << endl; 
+    // cout << "n-2 = " << *(std::next(m_indices.begin(), m_indices.size()-2-1)) << endl; 
+
     auto it_end = std::next(m_indices.begin(), m_indices.size()-2);
     for(it = m_indices.begin(); it != it_end; it++ )    {
 
-        cout << *it << endl; 
+        // cout << " --- it = " << *it << endl; 
 
         auto current = *it;
-        auto next = *(it++);
+        auto next = *(std::next(it));
+        // cout << "  current = " << current << endl; 
+        // cout << "  next    = " << next << endl; 
 
         if(next-current == r.step) {
-            cout << "same step: " << r.step << endl; 
+            // cout << "  constant step: " << r.step << endl; 
             if(r.isSingleFrame) r.isSingleFrame = false;
             r.end = next;
             continue;
         }
         else {
-            cout << "diff step: " << r.step << endl; 
+            // cout << "diff step: " << r.step << endl; 
             m_ranges.push_back(r);
-            cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
+            // cout << "  Adding = " << "[" << r.start << "-" << r.end << ":" << r.step << "]" << endl; 
 
             // If we are sure the next element is not the last we can prep a
             // new range
@@ -341,7 +362,7 @@ void Collection::_separate(int minimum_items){
                 r.start = next;
                 r.end = next;
                 r.step = *(std::next(it,2)) - next;
-                cout << "next range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
+                // cout << "  Init new range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
             }
         }
     }
@@ -354,17 +375,17 @@ void Collection::_separate(int minimum_items){
     // cout << "after loop range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
 
     // TOFIX accessing random pos suitable for vector?
-    int last = *(m_indices.end());
-    int beforeLast = *(m_indices.rend()++);
+    int last = *(m_indices.rbegin());
+    int beforeLast = *(std::next(m_indices.end(), -2));
 
-    cout << "beforeLast = " << beforeLast << endl;
-    cout << "last = " << last << endl;
+    // cout << "beforeLast = " << beforeLast << endl;
+    // cout << "last = " << last << endl;
 
     if(last-r.end == r.step) {
         r.end = last;
         if(r.isSingleFrame) r.isSingleFrame = false;
         m_ranges.push_back(r);
-        cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
+        // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
     }
     else{
         // r.step = last - beforeLast;
@@ -380,6 +401,4 @@ void Collection::_separate(int minimum_items){
         // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
     }
     // }
-
-
 }

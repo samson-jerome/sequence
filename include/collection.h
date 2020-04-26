@@ -87,8 +87,12 @@ namespace sequence {
         // std::string toString(const std::string &format=DEFAULT_FORMAT);
         // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
         int count();
+
+        // @todo make: first, last and getNth accessors for the frame number
+        // make: firstItem, lastItem, getItem and getNthItem accessors of items
         int first();
         int last();
+
         void insert(int frame);
 		void insert(std::vector<int> frames_list);
 		void remove(int frame);
