@@ -1,81 +1,182 @@
 #include "catch.hpp"
 
+#include <map>
+#include <string>
+
 #include "sequence.h"
 #include "collection.h"
 
+
 using std::cout;
 using std::endl;
+using std::string;
+using std::map;
+using std::pair;
+using std::vector;
 
 using sequence::Collection;
 using sequence::assemble;
 using sequence::parse;
 
+struct MockCollection{
+    string head, tail, format, full_format;
+    int count, padding, first, last;
+//    vector<int> indices, holes;
+};
+
+MockCollection get_mock(string head, string tail, string format, 
+    string full_format, int count, int padding, int first, int last) 
+{
+    MockCollection result;
+    result.head = head;
+    result.tail = tail;
+    result.format = format;
+    result.full_format = full_format;
+
+    result.count = count;
+    result.padding = padding;
+    result.first = first;
+    result.last = last;
+
+    return result;
+}
+
+vector<string> test_collection(Collection c, MockCollection mock) {
+
+    string full_format = "{head} {tail} {global_range} {ranges} {padding} {holes}";
+    vector<string> result;
+
+    cout << "TESTING " << c.format() << endl;
+
+    if( c.count() != mock.count)
+        result.push_back("Error in collection::count");
+    if(c.head() != mock.head)
+        result.push_back("Error in collection::head");
+    if(c.tail() != mock.tail)
+        result.push_back("Error in collection::tail");
+    if(c.padding() != mock.padding)
+        result.push_back("Error in collection::padding");
+    if(c.first() != mock.first)
+        result.push_back("Error in collection::first");
+    if(c.last() != mock.last)
+        result.push_back("Error in collection::last");
+    if(c.format() != mock.format)
+        result.push_back("Error in collection::format");
+    if(c.format(full_format) != mock.full_format)
+        result.push_back("Error in collection::full_format = " + c.format(full_format));
+
+    return result;
+}
 // --------------------------------------------------------------------------
 // Check remainders
 TEST_CASE("constructor", "[creation]") {
+    MockCollection mock;
+    vector<string> res;
 
-    Collection collection1 = Collection("head.", ".tail", 1, 3);
-    REQUIRE(collection1.count() == 3);
-    REQUIRE(collection1.head() == "head.");
-    REQUIRE(collection1.tail() == ".tail");
-    REQUIRE(collection1.padding() == 0);
-    REQUIRE(collection1.first() == 1);
-    REQUIRE(collection1.last() == 3);
-    cout << collection1.format() << endl;
+    res = test_collection(
+        Collection("head.", ".tail", 1, 3),
+        get_mock("head.", ".tail", "head.[1:3].tail", "head. .tail 1:3 1:3 0 ",
+            3, 0, 1, 3)
+    );
+    for(string err : res) { cout << err << endl; }
+    CHECK(res.size() == 0);
 
-    Collection collection2 = Collection("head.", ".tail", 1, 5);
-    REQUIRE(collection2.count() == 5);
-    REQUIRE(collection2.head() == "head.");
-    REQUIRE(collection2.tail() == ".tail");
-    REQUIRE(collection2.padding() == 0);
-    REQUIRE(collection2.first() == 1);
-    REQUIRE(collection2.last() == 5);
-    cout << collection2.format() << endl;
 
-    Collection collection3 = Collection("head.", ".tail", 1, 6, 4);
-    REQUIRE(collection3.count() == 6);
-    REQUIRE(collection3.head() == "head.");
-    REQUIRE(collection3.tail() == ".tail");
-    REQUIRE(collection3.padding() == 4);
-    REQUIRE(collection3.first() == 1);
-    REQUIRE(collection3.last() == 6);
-    cout << collection3.format() << endl;
+    // REQUIRE(collection1.count() == 3);
+    // REQUIRE(collection1.head() == "head.");
+    // REQUIRE(collection1.tail() == ".tail");
+    // REQUIRE(collection1.padding() == 0);
+    // REQUIRE(collection1.first() == 1);
+    // REQUIRE(collection1.last() == 3);
+    // REQUIRE(collection1.format() == "head.[1:3].tail");
+    // cout << collection1.format("{head}[{global_range}]{tail}") << endl;
 
-    Collection collection4 = Collection("head.", ".tail", { 5, 6, 7 }, 4);
-    REQUIRE(collection4.count() == 3);
-    REQUIRE(collection4.head() == "head.");
-    REQUIRE(collection4.tail() == ".tail");
-    REQUIRE(collection4.padding() == 4);
-    REQUIRE(collection4.first() == 5);
-    REQUIRE(collection4.last() == 7);
-    cout << collection4.format() << endl;
+    res = test_collection(
+        Collection("head.", ".tail", 1, 5),
+        get_mock("head.", ".tail", "head.[1:5].tail", "head. .tail 1:5 1:5 0 ",
+            5, 0, 1, 5)
+    );
+    for(string err : res) { cout << err << endl; }
+    CHECK(res.size() == 0);
 
-    Collection collection5 = Collection("head.", ".tail", {1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058 ,1059 ,1060 ,1061 ,1062 ,1063 ,1064 ,1065 ,1066 ,1067 ,1068 ,1069 ,1070 ,1071 ,1072 ,1073 ,1074 ,1075 ,1076 ,1077, 1078, 1079, 1080});
-    REQUIRE(collection5.count() == 31);
-    REQUIRE(collection5.head() == "head.");
-    REQUIRE(collection5.tail() == ".tail");
-    REQUIRE(collection5.padding() == 0);
-    REQUIRE(collection5.first() == 1050);
-    REQUIRE(collection5.last() == 1080);
-    cout << collection5.format() << endl;
+    // Collection collection2 = Collection("head.", ".tail", 1, 5);
+    // REQUIRE(collection2.count() == 5);
+    // REQUIRE(collection2.head() == "head.");
+    // REQUIRE(collection2.tail() == ".tail");
+    // REQUIRE(collection2.padding() == 0);
+    // REQUIRE(collection2.first() == 1);
+    // REQUIRE(collection2.last() == 5);
+    // cout << collection2.format() << endl;
 
-    // @todo add copy const test
-    Collection copy = collection5;
-    REQUIRE(copy.count() == 31);
-    REQUIRE(copy.head() == "head.");
-    REQUIRE(copy.tail() == ".tail");
-    REQUIRE(copy.padding() == 0);
-    REQUIRE(copy.first() == 1050);
-    REQUIRE(copy.last() == 1080);
-    cout << copy.format() << endl;
+    // Collection collection3 = Collection("head.", ".tail", 1, 6, 4);
+    // REQUIRE(collection3.count() == 6);
+    // REQUIRE(collection3.head() == "head.");
+    // REQUIRE(collection3.tail() == ".tail");
+    // REQUIRE(collection3.padding() == 4);
+    // REQUIRE(collection3.first() == 1);
+    // REQUIRE(collection3.last() == 6);
+    // REQUIRE(collection3.firstItem() == "head.0001.tail");
+    // REQUIRE(collection3.lastItem() == "head.0006.tail");
 
-    auto item = copy.getItem(1050);
-    REQUIRE(item.first == "head.1050.tail");
-    REQUIRE(item.second == true);
+    // collection3.add(7);
+    // REQUIRE(collection3.lastItem() == "head.0007.tail");
+    
+    // std::vector<int> frames= {10, 11, 12};
+    // collection3.add(frames);
+    // REQUIRE(collection3.format() == "head.[0001:0007,0010:0012].tail");
 
-    item = copy.getItem(1051);
-    REQUIRE(item.first == "head.1051.tail");
-    REQUIRE(item.second == true);
+    // collection3.remove(8);
+    // REQUIRE(collection3.format() == "head.[0001:0007,0010:0012].tail");
+
+    // collection3.remove(7);
+    // REQUIRE(collection3.format() == "head.[0001:0006,0010:0012].tail");
+
+    // collection3.remove(frames);
+    // REQUIRE(collection3.format() == "head.[0001:0006].tail");
+
+    // // collection3.addItem("head.0007.tail");
+    // // REQUIRE(collection3.lastItem() == "head.0007.tail");
+
+    // // REQUIRE(collection3.getFrames() == );
+    // // REQUIRE(collection3.getHoles() == );
+    
+    // cout << collection3.format() << endl;
+
+    // Collection collection4 = Collection("head.", ".tail", { 5, 6, 7 }, 4);
+    // REQUIRE(collection4.count() == 3);
+    // REQUIRE(collection4.head() == "head.");
+    // REQUIRE(collection4.tail() == ".tail");
+    // REQUIRE(collection4.padding() == 4);
+    // REQUIRE(collection4.first() == 5);
+    // REQUIRE(collection4.last() == 7);
+    // cout << collection4.format() << endl;
+
+    // Collection collection5 = Collection("head.", ".tail", {1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058 ,1059 ,1060 ,1061 ,1062 ,1063 ,1064 ,1065 ,1066 ,1067 ,1068 ,1069 ,1070 ,1071 ,1072 ,1073 ,1074 ,1075 ,1076 ,1077, 1078, 1079, 1080});
+    // REQUIRE(collection5.count() == 31);
+    // REQUIRE(collection5.head() == "head.");
+    // REQUIRE(collection5.tail() == ".tail");
+    // REQUIRE(collection5.padding() == 0);
+    // REQUIRE(collection5.first() == 1050);
+    // REQUIRE(collection5.last() == 1080);
+    // cout << collection5.format() << endl;
+
+    // // @todo add copy const test
+    // Collection copy = collection5;
+    // REQUIRE(copy.count() == 31);
+    // REQUIRE(copy.head() == "head.");
+    // REQUIRE(copy.tail() == ".tail");
+    // REQUIRE(copy.padding() == 0);
+    // REQUIRE(copy.first() == 1050);
+    // REQUIRE(copy.last() == 1080);
+    // cout << copy.format() << endl;
+
+    // auto item = copy.getItem(1050);
+    // REQUIRE(item.first == "head.1050.tail");
+    // REQUIRE(item.second == true);
+
+    // item = copy.getItem(1051);
+    // REQUIRE(item.first == "head.1051.tail");
+    // REQUIRE(item.second == true);
 }
 
 // --------------------------------------------------------------------------
@@ -140,7 +241,7 @@ TEST_CASE("parsing fails if not collection", "[parsing]") {
 
   entry = "my_file.ext";
   try {
-	  Collection collection = sequence::parse(entry);
+      Collection collection = sequence::parse(entry);
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(true);
@@ -209,7 +310,7 @@ TEST_CASE("parsing failures on various wrong collections", "[parsing]") {
 
   entry = "my_file.%04.ext [1-10]";
   try {
-	Collection collection = sequence::parse(entry);
+    Collection collection = sequence::parse(entry);
   } 
   catch (const sequence::parse_exception& e) {
     REQUIRE(true);

@@ -57,148 +57,32 @@ Collection::Collection(const std::string& head, const std::string& tail, const i
     this->_separate();
 }
 
-int Collection::count() {
-    return m_indices.size();
+
+// =============================================================================
+// Items accessors
+
+std::string Collection::firstItem() {
+    return getItem(*m_indices.begin()).first;
 }
 
-int Collection::first() {
-	if (m_indices.empty()) {
-		throw "Empty collection";
-	}
-    return *(m_indices.begin());
+std::string Collection::lastItem() {
+    return getItem(*m_indices.rbegin()).first;
 }
 
-int Collection::last() {
-    return *(m_indices.rbegin());
+void Collection::addItem(std::string item) {
+// @todo implement
 }
 
-// http://www.cplusplus.com/reference/set/set/
-void Collection::insert(int frame) {
-
-    int current;
-    // for (std::vector<int>::const_iterator i = m_indexes.begin(); i != m_indexes.end(); ++i) {
-    //     if *i < 
-    // }
-
-    // int prev = m_indexes.at(0);
-    // int current;
-
-    // for (std::vector<int>::const_iterator i = m_indexes.begin()+1; i != m_indexes.end(); ++i) {
-    //     current = *i;
-    //     while (current-prev != 1) {
-    //         m_holes.push_back(++prev);
-    //     }
-    //     ++prev;
-    // }
-
-    // Recreate the ranges
-    this->_separate();
-}
-void Collection::insert(std::vector<int> frames_list) {}
-
-void Collection::remove(int frame) {}
-void Collection::remove(std::vector<int> frames_list) {}
-void Collection::update(int frame) {}
-void Collection::update(std::vector<int> frames_list) {}
-
-
-std::string Collection::head() const{
-    return m_head;
+void Collection::addItem(std::vector<std::string> items_list) {
+// @todo implement
 }
 
-void Collection::setHead(std::string head){
-    m_head = head;
+void Collection::removeItem(std::string item) {
+// @todo implement    
 }
 
-std::string Collection::tail() const{
-    return m_tail;
-}
-
-void Collection::setTail(std::string tail){
-    m_tail = tail;
-}
-
-int Collection::padding() const{
-    return m_padding;
-}
-
-void Collection::setPadding(int padding) {
-    if(0 < padding)
-        m_padding = padding;
-    throw std::invalid_argument("padding cannot be negative");
-}
-
-// TODO update to be similar to print from fmt taking an stream or none to use stdout
-void Collection::info() {
-    std::cout << "Collection construct" << std::endl;
-    std::cout << "  head...: " << m_head << std::endl;
-    std::cout << "  tail...: " << m_tail << std::endl;
-    std::cout << "  padding: " << m_padding << std::endl;
-    std::cout << "  indexes: " ;
-    for (std::set<int>::const_iterator i = m_indices.begin(); i != m_indices.end(); ++i)
-        std::cout << *i << ' ';
-    std::cout << std::endl;
-    std::cout << "  holes..: ";
-    for (std::vector<int>::const_iterator i = m_holes.begin(); i != m_holes.end(); ++i)
-        std::cout << *i << ' ';
-    std::cout << std::endl;
-}
-
-// void Collection::print(format=CollectionFormats.default) {
-
-// }
-
-// std::string Collection::format(const std::string &format) {
-//     return format;
-// }
-
-/**
- * Formats returns a string with information about the current collection 
- * formatted using the desired pattern (default head.[1:10].ext)
- * \return a string
-*/
-std::string Collection::format() {
-    std::string fullRange = "";
-
-    for(Range r : m_ranges){
-        if(r.isSingleFrame) {
-            fullRange += fmt::format("{index:0>{padding}}", "index"_a=r.start,
-                "padding"_a=m_padding) + ",";
-        } else {
-            std::string val;
-            if(r.step == 1){
-                val = fmt::format("{start:0>{padding}}:{end:0>{padding}}", "start"_a=r.start, "end"_a=r.end,
-                    "padding"_a=m_padding);
-            } else {
-                val = fmt::format("{start:0>{padding}}:{end:0>{padding}}x{step}", "start"_a=r.start, "end"_a=r.end,
-                    "step"_a=r.step, "padding"_a=m_padding);
-            }
-            // auto val = (r.step==1) ? 
-            //     std::to_string(r.start) + ":" + std::to_string(r.end) :
-            //     std::to_string(r.start) + ":" + std::to_string(r.end) + "x" + std::to_string(r.step);
-            fullRange += val + ",";
-        }
-    }
-    fullRange.erase(fullRange.size() - 1);
-
-    return fmt::format("{head}[{range:0<{padding}}]{tail}",  
-        "head"_a=m_head, "range"_a=fullRange, "tail"_a=m_tail,
-        "padding"_a=m_padding);
-}
-
-
-/**
- * Use collection details to express each item name individually
- * \return the list of all expanded names
- */
-std::vector<std::string> Collection::getItems() const{
-    std::vector<std::string> result;
-    for(auto i : m_indices){
-        result.push_back(fmt::format("{head}{range:0>{padding}}{tail}",  
-            "head"_a=m_head, "range"_a=i, "tail"_a=m_tail,
-            "padding"_a=m_padding));
-    }
-    return result;
+void Collection::removeItem(std::vector<std::string> items_list) {
+// @todo implement    
 }
 
 /**
@@ -250,6 +134,251 @@ std::pair<std::string, bool> Collection::getNthItem(int index) const {
     return result;
 }
 
+
+// =============================================================================
+// Frames accessors
+
+int Collection::first() {
+	if (m_indices.empty()) {
+		throw "Empty collection";
+	}
+    return *(m_indices.begin());
+}
+
+int Collection::last() {
+    return *(m_indices.rbegin());
+}
+
+void Collection::add(int frame) {
+
+    auto ret = m_indices.insert(frame);
+
+    if (ret.second == true) {
+        // if insertion actually happened, recreate the ranges
+        this->_separate();
+    }
+}
+void Collection::add(std::vector<int> frames_list) { 
+
+    // @remind find a way to know if elements were really inserted
+    m_indices.insert(frames_list.begin(), frames_list.end());
+    m_indices.insert(*frames_list.rbegin());
+
+    this->_findHoles();
+    this->_separate();
+}
+
+void Collection::remove(int frame) {
+    m_indices.erase(frame);
+    this->_findHoles();
+    this->_separate();
+}
+
+void Collection::remove(std::vector<int> frames_list) {
+    for(auto f : frames_list)
+        m_indices.erase(f);
+
+    this->_findHoles();
+    this->_separate();
+}
+
+
+// =============================================================================
+// Global accessors
+
+/**
+ * Use collection details to express each item name individually
+ * \return the list of all expanded names
+ */
+std::vector<std::string> Collection::getItems() const {
+    std::vector<std::string> result;
+    for(auto i : m_indices){
+        result.push_back(fmt::format("{head}{range:0>{padding}}{tail}",  
+            "head"_a=m_head, "range"_a=i, "tail"_a=m_tail,
+            "padding"_a=m_padding));
+    }
+    return result;
+}
+
+/**
+ * Returns the list of frames as a vector of int
+ * \return a vector of int
+ */
+std::vector<int> Collection::getFrames() const {
+    std::vector<int> result(m_indices.begin(), m_indices.end());
+    return result;
+}
+
+std::vector<int> Collection::getHoles() const {
+        return m_holes;
+}
+
+int Collection::count() {
+    return m_indices.size();
+}
+
+// TODO update to be similar to print from fmt taking an stream or none to use stdout
+void Collection::info() {
+    std::cout << "Collection construct" << std::endl;
+    std::cout << "  head...: " << m_head << std::endl;
+    std::cout << "  tail...: " << m_tail << std::endl;
+    std::cout << "  padding: " << m_padding << std::endl;
+    std::cout << "  indexes: " ;
+    for (std::set<int>::const_iterator i = m_indices.begin(); i != m_indices.end(); ++i)
+        std::cout << *i << ' ';
+    std::cout << std::endl;
+    std::cout << "  holes..: ";
+    for (std::vector<int>::const_iterator i = m_holes.begin(); i != m_holes.end(); ++i)
+        std::cout << *i << ' ';
+    std::cout << std::endl;
+}
+
+// void Collection::print(format=CollectionFormats.default) {
+// }
+
+// std::string Collection::format(const std::string &format) {
+//     return format;
+// }
+
+/**
+ * Formats returns a string with information about the current collection 
+ * formatted using the desired pattern (default head.[1:10].ext)
+ * \return a string
+*/
+std::string Collection::format(std::string pattern) {
+    std::string head= m_head;
+    std::string tail = m_tail;
+    std::string holes= "";
+    std::string ranges = "";
+    std::string global_range = "";
+    int padding = m_padding;
+
+    // Get global range i.e. "first-last"
+    global_range = fmt::format("{first:0>{padding}}{sep}{last:0>{padding}}", 
+        "first"_a=first(),
+        "last"_a=last(),
+        "sep"_a=m_frame_separator,
+        "padding"_a=m_padding
+    );
+
+    // Get all range i.e. "1-10" or "1-10,15,20"...
+    for(Range r : m_ranges){
+        if(r.isSingleFrame) {
+            ranges += fmt::format("{index:0>{padding}}", "index"_a=r.start,
+                "padding"_a=m_padding) + ",";
+        } else {
+            std::string val;
+            if(r.step == 1){
+                val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}", "start"_a=r.start, "end"_a=r.end,
+                    "padding"_a=m_padding, "sep"_a=m_frame_separator);
+            } else {
+                val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
+                    "step"_a=r.step, "padding"_a=m_padding,
+                    "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
+            }
+            ranges += val + ",";
+        }
+    }
+    ranges.erase(ranges.size() - 1);
+
+    // Get holes
+    holes = fmt::format("{}", fmt::join(m_holes, m_range_separator));
+
+    return fmt::format(pattern,  
+        "head"_a=head,
+        "tail"_a=tail,
+        "ranges"_a=ranges,
+        "global_range"_a=global_range,
+        "padding"_a=padding,
+        "holes"_a=holes);
+}
+
+// /**
+//  * Formats returns a string with information about the current collection 
+//  * formatted using the desired pattern (default head.[1:10].ext)
+//  * \return a string
+// */
+// std::string Collection::format(std::string pattern) {
+//     std::string head= m_head;
+//     std::string tail = m_tail;
+//     std::string holes= "";
+//     std::string ranges = "";
+//     std::string global_range = "";
+//     int padding = m_padding;
+
+//     return "";
+//     // Get global range i.e. "first-last"
+//     global_range = fmt::format("{first:0>{padding}}{sep}{last:0>{padding}}", 
+//         "first"_a=first(),
+//         "last"_a=last(),
+//         "sep"_a=m_frame_separator,
+//         "padding"_a=m_padding
+//     );
+
+//     // Get all range i.e. "1-10" or "1-10,15,20"...
+//     for(Range r : m_ranges){
+//         if(r.isSingleFrame) {
+//             ranges += fmt::format("{index:0>{padding}}", "index"_a=r.start,
+//                 "padding"_a=m_padding) + ",";
+//         } else {
+//             std::string val;
+//             if(r.step == 1){
+//                 val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}", "start"_a=r.start, "end"_a=r.end,
+//                     "padding"_a=m_padding);
+//             } else {
+//                 val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
+//                     "step"_a=r.step, "padding"_a=m_padding,
+//                     "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
+//             }
+//             ranges += val + ",";
+//         }
+//     }
+//     ranges.erase(ranges.size() - 1);
+
+//     // Get holes
+//     holes = fmt::format("{}", fmt::join(m_holes, m_range_separator));
+
+//     return fmt::format(pattern,  
+//         "head"_a=head,
+//         "tail"_a=tail,
+//         "ranges"_a=ranges,
+//         "global_range"_a=global_range,
+//         "padding"_a=padding,
+//         "holes"_a=holes);
+// }
+
+// =============================================================================
+// Structure accessors
+
+std::string Collection::head() const{
+    return m_head;
+}
+
+void Collection::setHead(std::string head){
+    m_head = head;
+}
+
+std::string Collection::tail() const{
+    return m_tail;
+}
+
+void Collection::setTail(std::string tail){
+    m_tail = tail;
+}
+
+int Collection::padding() const{
+    return m_padding;
+}
+
+void Collection::setPadding(int padding) {
+    if(0 < padding)
+        m_padding = padding;
+    throw std::invalid_argument("padding cannot be negative");
+}
+
+
+// =============================================================================
+// Protected members
 
 /**
 Updates current collection to recreate the list of missing frames from the list 

@@ -70,7 +70,9 @@ namespace sequence {
         std::string m_head;         //< head part of the collection
         std::string m_tail;         //< tail part of the collection
         int m_padding;              //< size of zero-padded indexes
-
+        std::string m_frame_separator = ":";
+        std::string m_step_separator = "x";
+        std::string m_range_separator = ", ";
         std::vector<int> m_holes;
         std::deque<Range> m_ranges;
 
@@ -84,31 +86,48 @@ namespace sequence {
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
         Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding);
 
-        // std::string toString(const std::string &format=DEFAULT_FORMAT);
-        // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
-        int count();
+        // =====================================================================
+        // Items accessors
+        std::string firstItem();
+        std::string lastItem();
+        void addItem(std::string item);
+        void addItem(std::vector<std::string> items_list);
+        void removeItem(std::string item);
+        void removeItem(std::vector<std::string> items_list);
 
-        // @todo make: first, last and getNth accessors for the frame number
-        // make: firstItem, lastItem, getItem and getNthItem accessors of items
+        std::pair<std::string, bool> getItem(int frame) const;
+        std::pair<std::string, bool> getNthItem(int index) const;
+
+        // =====================================================================
+        // Frame accessors
         int first();
         int last();
+        void add(int frame);
+        void add(std::vector<int> frames_list);
+        void remove(int frame);
+        void remove(std::vector<int> frames_list);
 
-        void insert(int frame);
-		void insert(std::vector<int> frames_list);
-		void remove(int frame);
-		void remove(std::vector<int> frames_list);
-		void update(int frame);
-		void update(std::vector<int> frames_list);
+        // =====================================================================
+        // Global accessors
+        std::vector<std::string> getItems() const;
+        std::vector<int> getFrames() const;
+        std::vector<int> getHoles() const;
+        int count();
+        // std::string toString(const std::string &format=DEFAULT_FORMAT);
+        // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
 
         /**
          * \brief Format description
          */
-        std::string format();
+        // std::string format();
+        std::string format(std::string pattern = "{head}[{ranges}]{tail}");
         void info();
         // void print(string format="");
         // void print(CollectionFormats format=Format.natural);
         // void print(stream, format=CollectionFormats.default);
 
+        // =====================================================================
+        // Structure accessors
         std::string head() const;
         void setHead(std::string);
 
@@ -117,12 +136,6 @@ namespace sequence {
 
         int padding() const;
         void setPadding(int);
-
-        std::vector<std::string> getItems() const;
-        std::pair<std::string, bool> getItem(int frame) const;
-
-        std::pair<std::string, bool> getNthItem(int index) const;
-
 
     protected:
         void _findHoles();
