@@ -49,24 +49,27 @@ vector<string> test_collection(Collection c, MockCollection mock) {
     cout << "TESTING " << c.format() << endl;
 
     if( c.count() != mock.count)
-        result.push_back("Error in collection::count");
+        result.push_back("Error in collection::count = " + std::to_string(c.count()));
     if(c.head() != mock.head)
-        result.push_back("Error in collection::head");
+        result.push_back("Error in collection::head = " + c.head());
     if(c.tail() != mock.tail)
-        result.push_back("Error in collection::tail");
+        result.push_back("Error in collection::tail = " + c.tail());
     if(c.padding() != mock.padding)
-        result.push_back("Error in collection::padding");
+        result.push_back("Error in collection::padding = " + std::to_string(c.padding()));
     if(c.first() != mock.first)
-        result.push_back("Error in collection::first");
+        result.push_back("Error in collection::first = " + std::to_string(c.first()));
     if(c.last() != mock.last)
-        result.push_back("Error in collection::last");
+        result.push_back("Error in collection::last = " + std::to_string(c.last()));
     if(c.format() != mock.format)
-        result.push_back("Error in collection::format");
+        result.push_back("Error in collection::format = "  + c.format());
     if(c.format(full_format) != mock.full_format)
         result.push_back("Error in collection::full_format = " + c.format(full_format));
 
+    for(string err : result) { cout << err << endl; }
     return result;
 }
+
+
 // --------------------------------------------------------------------------
 // Check remainders
 TEST_CASE("constructor", "[creation]") {
@@ -74,109 +77,107 @@ TEST_CASE("constructor", "[creation]") {
     vector<string> res;
 
     res = test_collection(
-        Collection("head.", ".tail", 1, 3),
-        get_mock("head.", ".tail", "head.[1:3].tail", "head. .tail 1:3 1:3 0 ",
-            3, 0, 1, 3)
-    );
-    for(string err : res) { cout << err << endl; }
-    CHECK(res.size() == 0);
-
-
-    // REQUIRE(collection1.count() == 3);
-    // REQUIRE(collection1.head() == "head.");
-    // REQUIRE(collection1.tail() == ".tail");
-    // REQUIRE(collection1.padding() == 0);
-    // REQUIRE(collection1.first() == 1);
-    // REQUIRE(collection1.last() == 3);
-    // REQUIRE(collection1.format() == "head.[1:3].tail");
-    // cout << collection1.format("{head}[{global_range}]{tail}") << endl;
-
-    res = test_collection(
         Collection("head.", ".tail", 1, 5),
         get_mock("head.", ".tail", "head.[1:5].tail", "head. .tail 1:5 1:5 0 ",
             5, 0, 1, 5)
     );
-    for(string err : res) { cout << err << endl; }
     CHECK(res.size() == 0);
 
-    // Collection collection2 = Collection("head.", ".tail", 1, 5);
-    // REQUIRE(collection2.count() == 5);
-    // REQUIRE(collection2.head() == "head.");
-    // REQUIRE(collection2.tail() == ".tail");
-    // REQUIRE(collection2.padding() == 0);
-    // REQUIRE(collection2.first() == 1);
-    // REQUIRE(collection2.last() == 5);
-    // cout << collection2.format() << endl;
 
-    // Collection collection3 = Collection("head.", ".tail", 1, 6, 4);
-    // REQUIRE(collection3.count() == 6);
-    // REQUIRE(collection3.head() == "head.");
-    // REQUIRE(collection3.tail() == ".tail");
-    // REQUIRE(collection3.padding() == 4);
-    // REQUIRE(collection3.first() == 1);
-    // REQUIRE(collection3.last() == 6);
-    // REQUIRE(collection3.firstItem() == "head.0001.tail");
-    // REQUIRE(collection3.lastItem() == "head.0006.tail");
+    res = test_collection(
+        Collection("head.", ".tail", 1, 5, 4),
+        get_mock("head.", ".tail", "head.[0001:0005].tail", "head. .tail 0001:0005 0001:0005 4 ",
+            5, 4, 1, 5)
+    );
+    CHECK(res.size() == 0);
 
-    // collection3.add(7);
-    // REQUIRE(collection3.lastItem() == "head.0007.tail");
-    
-    // std::vector<int> frames= {10, 11, 12};
-    // collection3.add(frames);
-    // REQUIRE(collection3.format() == "head.[0001:0007,0010:0012].tail");
 
-    // collection3.remove(8);
-    // REQUIRE(collection3.format() == "head.[0001:0007,0010:0012].tail");
+    Collection edited = Collection("head.", ".tail", {10, 11, 12, 13});
+    res = test_collection(
+        edited,
+        get_mock("head.", ".tail", "head.[10:13].tail", "head. .tail 10:13 10:13 0 ",
+            4, 0, 10, 13)
+    );
+    CHECK(res.size() == 0);
 
-    // collection3.remove(7);
-    // REQUIRE(collection3.format() == "head.[0001:0006,0010:0012].tail");
+    edited.remove(10);
+    res = test_collection(
+        edited,
+        get_mock("head.", ".tail", "head.[11:13].tail", "head. .tail 11:13 11:13 0 ",
+            3, 0, 11, 13)
+    );
+    CHECK(res.size() == 0);
 
-    // collection3.remove(frames);
-    // REQUIRE(collection3.format() == "head.[0001:0006].tail");
+    edited.add(10);
+    res = test_collection(
+        edited,
+        get_mock("head.", ".tail", "head.[10:13].tail", "head. .tail 10:13 10:13 0 ",
+            4, 0, 10, 13)
+    );
+    CHECK(res.size() == 0);
 
-    // // collection3.addItem("head.0007.tail");
-    // // REQUIRE(collection3.lastItem() == "head.0007.tail");
+    edited.add({1, 2, 3, 4, 5, 6});
+    res = test_collection(
+        edited,
+        get_mock("head.", ".tail", "head.[1:6,10:13].tail", "head. .tail 1:13 1:6,10:13 0 7,8,9",
+            10, 0, 1, 13)
+    );
+    CHECK(res.size() == 0);
 
-    // // REQUIRE(collection3.getFrames() == );
-    // // REQUIRE(collection3.getHoles() == );
-    
-    // cout << collection3.format() << endl;
+    edited.remove({5, 6, 7, 8, 9, 10 ,11});
+    res = test_collection(
+        edited,
+        get_mock("head.", ".tail", "head.[1:4,12:13].tail", "head. .tail 1:13 1:4,12:13 0 5,6,7,8,9,10,11",
+            6, 0, 1, 13)
+    );
+    CHECK(res.size() == 0);
 
-    // Collection collection4 = Collection("head.", ".tail", { 5, 6, 7 }, 4);
-    // REQUIRE(collection4.count() == 3);
-    // REQUIRE(collection4.head() == "head.");
-    // REQUIRE(collection4.tail() == ".tail");
-    // REQUIRE(collection4.padding() == 4);
-    // REQUIRE(collection4.first() == 5);
-    // REQUIRE(collection4.last() == 7);
-    // cout << collection4.format() << endl;
+    // @audit how to handle clear and empty collection?
+    // edited.clear();
+    // res = test_collection(
+    //     edited,
+    //     get_mock("head.", ".tail", "head.[].tail", "head. .tail   0 ",
+    //         0, 0, 0, 0)
+    // );
+    // CHECK(res.size() == 0);
 
-    // Collection collection5 = Collection("head.", ".tail", {1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058 ,1059 ,1060 ,1061 ,1062 ,1063 ,1064 ,1065 ,1066 ,1067 ,1068 ,1069 ,1070 ,1071 ,1072 ,1073 ,1074 ,1075 ,1076 ,1077, 1078, 1079, 1080});
-    // REQUIRE(collection5.count() == 31);
-    // REQUIRE(collection5.head() == "head.");
-    // REQUIRE(collection5.tail() == ".tail");
-    // REQUIRE(collection5.padding() == 0);
-    // REQUIRE(collection5.first() == 1050);
-    // REQUIRE(collection5.last() == 1080);
-    // cout << collection5.format() << endl;
+    CHECK(edited.lastItem() == "head.13.tail");
+
+    vector<int> frames = {1,2,3,4,12,13};
+    CHECK(edited.frames() == frames);
+
+    vector<int> holes = {5,6,7,8,9,10,11};
+    CHECK(edited.holes() == holes);
+
+
+    // -------------------------------------------------------------------------
+    //  Large collection
+    Collection large = Collection("head.", ".tail", 1001, 1950);
+    res = test_collection(
+        large,
+        get_mock("head.", ".tail", "head.[1001:1950].tail", "head. .tail 1001:1950 1001:1950 0 ",
+            950, 0, 1001, 1950)
+    );
+    CHECK(res.size() == 0);
+
+    // -------------------------------------------------------------------------
+    //  Negative collection
+    Collection negative = Collection("head.", ".tail", -15, -5);
+    res = test_collection(
+        negative,
+        get_mock("head.", ".tail", "head.[-15:-5].tail", "head. .tail -15:-5 -15:-5 0 ",
+            11, 0, -15, -5)
+    );
+    CHECK(res.size() == 0);
 
     // // @todo add copy const test
-    // Collection copy = collection5;
-    // REQUIRE(copy.count() == 31);
-    // REQUIRE(copy.head() == "head.");
-    // REQUIRE(copy.tail() == ".tail");
-    // REQUIRE(copy.padding() == 0);
-    // REQUIRE(copy.first() == 1050);
-    // REQUIRE(copy.last() == 1080);
-    // cout << copy.format() << endl;
-
-    // auto item = copy.getItem(1050);
-    // REQUIRE(item.first == "head.1050.tail");
-    // REQUIRE(item.second == true);
-
-    // item = copy.getItem(1051);
-    // REQUIRE(item.first == "head.1051.tail");
-    // REQUIRE(item.second == true);
+    Collection copy = large;
+    res = test_collection(
+        large,
+        get_mock("head.", ".tail", "head.[1001:1950].tail", "head. .tail 1001:1950 1001:1950 0 ",
+            950, 0, 1001, 1950)
+    );
+    CHECK(res.size() == 0);
 }
 
 // --------------------------------------------------------------------------

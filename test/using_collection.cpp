@@ -21,7 +21,7 @@ TEST_CASE("gettings items", "[collection]") {
     tie(collections, remainders) = sequence::assemble(entries);
     collections.at(0).info();
  
-    items = collections.at(0).getItems();
+    items = collections.at(0).items();
     cout << items.at(0) << endl;
  
     REQUIRE(items.at(0) == "seq.001.ext");
