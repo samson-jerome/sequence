@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 
+set (CMAKE_CXX_COMPILER clang++)
+set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # ---------------------------------------------------------------------
 # Project setup
 project (sequence VERSION 0.2.0
                     LANGUAGES CXX)
-
-set (CMAKE_CXX_STANDARD 11)
-set (CMAKE_CXX_STANDARD_REQUIRED ON)
-set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Use GNUInstallDirs
 include(GNUInstallDirs)

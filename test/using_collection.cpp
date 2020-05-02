@@ -21,7 +21,7 @@ TEST_CASE("gettings items", "[collection]") {
     tie(collections, remainders) = sequence::assemble(entries);
     collections.at(0).info();
  
-    items = collections.at(0).getItems();
+    items = collections.at(0).items();
     cout << items.at(0) << endl;
  
     REQUIRE(items.at(0) == "seq.001.ext");
@@ -29,9 +29,9 @@ TEST_CASE("gettings items", "[collection]") {
     REQUIRE(items.at(2) == "seq.003.ext");
 
     // cout << collections.at(0).getItem(2) << endl;
-    REQUIRE(collections.at(0).getItem(1) == "seq.001.ext");
-    REQUIRE(collections.at(0).getItem(2) == "seq.002.ext");
-    REQUIRE(collections.at(0).getItem(3) == "seq.003.ext");
+    REQUIRE(collections.at(0).getItem(1).first == "seq.001.ext");
+    REQUIRE(collections.at(0).getItem(2).first == "seq.002.ext");
+    REQUIRE(collections.at(0).getItem(3).first == "seq.003.ext");
 }
 
 // --------------------------------------------------------------------------
