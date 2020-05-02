@@ -72,7 +72,7 @@ namespace sequence {
         int m_padding;              //< size of zero-padded indexes
         std::string m_frame_separator = ":";
         std::string m_step_separator = "x";
-        std::string m_range_separator = ", ";
+        std::string m_range_separator = ",";
         std::vector<int> m_holes;
         std::deque<Range> m_ranges;
 
@@ -109,10 +109,11 @@ namespace sequence {
 
         // =====================================================================
         // Global accessors
-        std::vector<std::string> getItems() const;
-        std::vector<int> getFrames() const;
-        std::vector<int> getHoles() const;
+        std::vector<std::string> items() const;
+        std::vector<int> frames() const;
+        std::vector<int> holes() const;
         int count();
+        void clear();
         // std::string toString(const std::string &format=DEFAULT_FORMAT);
         // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
 

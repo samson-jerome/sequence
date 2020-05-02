@@ -161,6 +161,7 @@ void Collection::add(int frame) {
 void Collection::add(std::vector<int> frames_list) { 
 
     // @remind find a way to know if elements were really inserted
+    // to avoid having to call _findHoles and _separate unecessarily
     m_indices.insert(frames_list.begin(), frames_list.end());
     m_indices.insert(*frames_list.rbegin());
 
@@ -190,7 +191,7 @@ void Collection::remove(std::vector<int> frames_list) {
  * Use collection details to express each item name individually
  * \return the list of all expanded names
  */
-std::vector<std::string> Collection::getItems() const {
+std::vector<std::string> Collection::items() const {
     std::vector<std::string> result;
     for(auto i : m_indices){
         result.push_back(fmt::format("{head}{range:0>{padding}}{tail}",  
@@ -204,17 +205,23 @@ std::vector<std::string> Collection::getItems() const {
  * Returns the list of frames as a vector of int
  * \return a vector of int
  */
-std::vector<int> Collection::getFrames() const {
+std::vector<int> Collection::frames() const {
     std::vector<int> result(m_indices.begin(), m_indices.end());
     return result;
 }
 
-std::vector<int> Collection::getHoles() const {
+std::vector<int> Collection::holes() const {
         return m_holes;
 }
 
 int Collection::count() {
     return m_indices.size();
+}
+
+void Collection::clear() {
+    m_indices.clear();
+    m_holes.clear();
+    m_ranges.clear();
 }
 
 // TODO update to be similar to print from fmt taking an stream or none to use stdout
@@ -265,7 +272,7 @@ std::string Collection::format(std::string pattern) {
     for(Range r : m_ranges){
         if(r.isSingleFrame) {
             ranges += fmt::format("{index:0>{padding}}", "index"_a=r.start,
-                "padding"_a=m_padding) + ",";
+                "padding"_a=m_padding) + m_range_separator;
         } else {
             std::string val;
             if(r.step == 1){
@@ -276,10 +283,10 @@ std::string Collection::format(std::string pattern) {
                     "step"_a=r.step, "padding"_a=m_padding,
                     "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
             }
-            ranges += val + ",";
+            ranges += val + m_range_separator;
         }
     }
-    ranges.erase(ranges.size() - 1);
+    ranges.erase(ranges.size() - m_range_separator.size());
 
     // Get holes
     holes = fmt::format("{}", fmt::join(m_holes, m_range_separator));
