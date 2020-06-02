@@ -11,7 +11,7 @@ add_executable (tests "tests_main.cpp" "common_operations.cpp" "using_collection
 #    EXPORT_FILE_NAME sequence_EXPORTS.h
 #    STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
 
-target_link_libraries (tests sequence)
+target_link_libraries (tests PRIVATE sequence::sequence)
 
 #
 add_test(

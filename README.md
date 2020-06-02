@@ -5,15 +5,21 @@ having a numerical token as a collection.
 # Inspiration
 * Clique python module
 * rvls utility from TweakSoftware
+* fileseq - http://justinfx.com/gofileseq/cpp/index.html
 
 # Dependencies
 * C++11
 * cmake-3.5
-
-# Submodules
 * fmt-6.0.0
 
 # Roadmap
+## v0.2.1
+* refactor build (see spdlog build system) to use fmt:fmt from external
+* remove fmt submodule
+
+## v0.2.2
+* refactor build add support for fmt::fmt from bundled source
+
 ## v0.3.0
 * support padding
 * more constructors
