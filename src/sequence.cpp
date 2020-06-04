@@ -1,7 +1,7 @@
 #include <regex> 
 
-#include "collection.h"
-#include "sequence.h"
+#include "sequence/collection.h"
+#include "sequence/sequence.h"
 
 using std::string;
 using std::cout;

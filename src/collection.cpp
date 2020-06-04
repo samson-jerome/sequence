@@ -1,4 +1,4 @@
-#include "collection.h"
+#include "sequence/collection.h"
 
 using namespace sequence;
 

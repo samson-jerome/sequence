@@ -1,7 +1,7 @@
 #include "catch.hpp"
 
-#include "sequence.h"
-#include "collection.h"
+#include "sequence/sequence.h"
+#include "sequence/collection.h"
 
 using std::cout;
 using std::endl;

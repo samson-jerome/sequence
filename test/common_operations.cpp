@@ -3,8 +3,8 @@
 #include <map>
 #include <string>
 
-#include "sequence.h"
-#include "collection.h"
+#include "sequence/sequence.h"
+#include "sequence/collection.h"
 
 
 using std::cout;
