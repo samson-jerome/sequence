@@ -16,6 +16,9 @@ having a numerical token as a collection.
 ## v0.2.1
 * refactor build (see spdlog build system) to use fmt:fmt from external
 * remove fmt submodule
+* add fmt as a bundled, driven by cmake options
+* add Install
+* add FindSequence.cmake
 
 ## v0.2.2
 * refactor build add support for fmt::fmt from bundled source

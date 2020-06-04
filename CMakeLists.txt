@@ -51,7 +51,7 @@ option (SEQUENCE_BUILD_SHARED "Build shared library" OFF)
 option (SEQUENCE_BUILD_WARNINGS "Enable compiler warnings" OFF)
 
 # install options
-# option (SPDLOG_INSTALL "Generate the install target" ${SEQUENCE_MASTER_PROJECT})
+option (SEQUENCE_INSTALL "Generate the install target" ${SEQUENCE_MASTER_PROJECT})
 option (SEQUENCE_FMT_EXTERNAL "Use external fmt library instead of bundled" OFF)
 option (SEQUENCE_FMT_EXTERNAL_HO "Use external fmt header-only library instead of bundled" OFF)
 
@@ -74,7 +74,8 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # ---------------------------------------------------------------------
 # Static/Shared library (shared not supported in windows yet)
 # ---------------------------------------------------------------------
-set (SEQUENCE_SRC src/sequence/sequence.cpp src/sequence/collection.cpp)
+set (SEQUENCE_SRC src/sequence.cpp src/collection.cpp)
+set (SEQUENCE_ALL_HEADERS include/sequence/sequence.h include/sequence/collection.h)
 
 if(NOT SEQUENCE_FMT_EXTERNAL AND NOT SEQUENCE_FMT_EXTERNAL_HO)
     message(DEBUG "TODO add bundled fmt")
@@ -99,7 +100,7 @@ add_library(sequence::sequence ALIAS sequence)
 target_include_directories(sequence PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                                         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
-#set_target_properties(sequence PROPERTIES VERSION ${SEQUENCE_VERSION})
+set_target_properties(sequence PROPERTIES VERSION ${SEQUENCE_VERSION})
 
 # ---------------------------------------------------------------------
 # Use fmt package if using external fmt
@@ -115,7 +116,7 @@ if (SEQUENCE_FMT_EXTERNAL)
 
     target_link_libraries (sequence PRIVATE fmt::fmt)
 
-    # set (PKG_CONFIG_REQUIRES fmt) # add dependency to pkg-config
+    set (PKG_CONFIG_REQUIRES fmt) # add dependency to pkg-config
 endif()
 
 # ---------------------------------------------------------------------
@@ -136,5 +137,59 @@ endif()
 # Install
 # ---------------------------------------------------------------------
 if (SEQUENCE_INSTALL)
-    message(STATUS "TODO Generating install")
+    message(STATUS "Generating install")
+    set(project_config_in "${CMAKE_CURRENT_LIST_DIR}/cmake/sequenceConfig.cmake.in")
+    set(project_config_out "${CMAKE_CURRENT_BINARY_DIR}/sequenceConfig.cmake")
+
+    set(config_targets_file "sequenceConfigConfigTargets.cmake")
+    set(version_config_file "${CMAKE_CURRENT_BINARY_DIR}/sequenceConfigVersion.cmake")
+
+    set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/cmake/sequence")
+    set(pkgconfig_install_dir "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+    set(pkg_config "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc")
+
+    message(DEBUG "DBG: project_config_in = ${project_config_in}")
+    message(DEBUG "DBG: project_config_out = ${project_config_out}")
+    message(DEBUG "DBG: config_targets_file = ${config_targets_file}")
+    message(DEBUG "DBG: version_config_file = ${version_config_file}")
+    message(DEBUG "DBG: export_dest_dir = ${export_dest_dir}")
+    message(DEBUG "DBG: pkgconfig_install_dir = ${pkgconfig_install_dir}")
+    message(DEBUG "DBG: pkg_config = ${pkg_config}")
+
+    # ---------------------------------------------------------------------
+    # Include files
+    # ---------------------------------------------------------------------
+    install(DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" PATTERN "fmt/bundled" EXCLUDE)
+    install(
+        TARGETS sequence
+        EXPORT sequence
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+    # if(NOT SPDLOG_FMT_EXTERNAL AND NOT SPDLOG_FMT_EXTERNAL_HO)
+    #     install(DIRECTORY include/${PROJECT_NAME}/fmt/bundled/
+    #             DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/fmt/bundled/")
+    # endif()
+
+    # ---------------------------------------------------------------------
+    # Install pkg-config file
+    # ---------------------------------------------------------------------
+    get_target_property(PKG_CONFIG_DEFINES sequence INTERFACE_COMPILE_DEFINITIONS)
+    string(REPLACE ";" " -D" PKG_CONFIG_DEFINES "${PKG_CONFIG_DEFINES}")
+    string(CONCAT PKG_CONFIG_DEFINES "-D" "${PKG_CONFIG_DEFINES}")
+    configure_file("cmake/${PROJECT_NAME}.pc.in" "${pkg_config}" @ONLY)
+    install(FILES "${pkg_config}" DESTINATION "${pkgconfig_install_dir}")
+
+    # ---------------------------------------------------------------------
+    # Install CMake config files
+    # ---------------------------------------------------------------------
+    install(EXPORT sequence DESTINATION ${export_dest_dir} NAMESPACE sequence:: FILE ${config_targets_file})
+
+    include(CMakePackageConfigHelpers)
+    configure_file("${project_config_in}" "${project_config_out}" @ONLY)
+
+    write_basic_package_version_file("${version_config_file}" COMPATIBILITY SameMajorVersion)
+    install(FILES "${project_config_out}" "${version_config_file}" DESTINATION "${export_dest_dir}")
+
 endif()
