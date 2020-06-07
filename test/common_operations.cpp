@@ -48,22 +48,32 @@ vector<string> test_collection(Collection c, MockCollection mock) {
 
     cout << "TESTING " << c.format() << endl;
 
-    if( c.count() != mock.count)
-        result.push_back("Error in collection::count = " + std::to_string(c.count()));
     if(c.head() != mock.head)
-        result.push_back("Error in collection::head = " + c.head());
+        result.push_back("Error in collection::head: \"" + c.head() + "\" <> \"" + mock.head + "\"");
     if(c.tail() != mock.tail)
-        result.push_back("Error in collection::tail = " + c.tail());
+        result.push_back("Error in collection::tail: \"" + c.tail() + "\" <> \"" + mock.tail + "\"");
+
+    if( c.count() != mock.count)
+        result.push_back("Error in collection::count: \"" \
+            + std::to_string(c.count()) + "\" <> \"" \
+            + std::to_string(mock.count) + "\"");
     if(c.padding() != mock.padding)
-        result.push_back("Error in collection::padding = " + std::to_string(c.padding()));
+        result.push_back("Error in collection::padding: \"" \
+            + std::to_string(c.padding()) + "\" <> \"" \
+            + std::to_string(mock.padding) + "\"");
     if(c.first() != mock.first)
-        result.push_back("Error in collection::first = " + std::to_string(c.first()));
+        result.push_back("Error in collection::first: \"" \
+            + std::to_string(c.first()) + "\" <> \"" \
+            + std::to_string(mock.first) + "\"");
     if(c.last() != mock.last)
-        result.push_back("Error in collection::last = " + std::to_string(c.last()));
+        result.push_back("Error in collection::last: \"" \
+            + std::to_string(c.last()) + "\" <> \"" \
+            + std::to_string(mock.last) + "\"");
+
     if(c.format() != mock.format)
-        result.push_back("Error in collection::format = "  + c.format());
+        result.push_back("Error in collection::format: \"" + c.format() + "\" <> \"" + mock.format + "\"");
     if(c.format(full_format) != mock.full_format)
-        result.push_back("Error in collection::full_format = " + c.format(full_format));
+        result.push_back("Error in collection::full_format: \"" + c.format(full_format) + "\" <> \"" + mock.full_format + "\"");
 
     for(string err : result) { cout << err << endl; }
     return result;
@@ -75,6 +85,17 @@ vector<string> test_collection(Collection c, MockCollection mock) {
 TEST_CASE("constructor", "[creation]") {
     MockCollection mock;
     vector<string> res;
+
+    // Note: ATM a collection must at least have one frame.
+    Collection empty = Collection();
+    empty.add(1);
+
+    res = test_collection(
+        empty,
+        get_mock("", "", "[1]", "  1:1 1 0 ",
+            1, 0, 1, 1)
+    );
+    CHECK(res.size() == 0);
 
     res = test_collection(
         Collection("head.", ".tail", 1, 5),

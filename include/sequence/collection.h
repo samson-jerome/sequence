@@ -67,9 +67,9 @@ namespace sequence {
         // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
         
         std::set<int> m_indices;    //< set of numerical indexes
-        std::string m_head;         //< head part of the collection
-        std::string m_tail;         //< tail part of the collection
-        int m_padding;              //< size of zero-padded indexes
+        std::string m_head = "";    //< head part of the collection
+        std::string m_tail = "";    //< tail part of the collection
+        int m_padding = 0;          //< size of zero-padded indexes
         std::string m_frame_separator = ":";
         std::string m_step_separator = "x";
         std::string m_range_separator = ",";
@@ -80,6 +80,7 @@ namespace sequence {
         // std::string m_cached_holes;
 
     public:
+        Collection();
         Collection(const sequence::Collection &c);
         Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
         Collection(const std::string& head, const std::string& tail, const int start, const int end);

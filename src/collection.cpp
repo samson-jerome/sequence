@@ -2,6 +2,8 @@
 
 using namespace sequence;
 
+Collection::Collection() {}
+
 Collection::Collection(const sequence::Collection &c) {
     
     for(auto frame : c.m_indices)
