@@ -2,7 +2,16 @@
 
 cmake_minimum_required (VERSION 3.5)
 
-set (CMAKE_CXX_COMPILER clang++)
+
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+    message (STATUS "VCPKG_CMAKE_TOOLCHAIN: ${CMAKE_TOOLCHAIN_FILE}")
+endif()
+
+if (NOT WIN32)
+    set (CMAKE_CXX_COMPILER clang++)
+endif()
+
 set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -12,7 +21,7 @@ set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 # ---------------------------------------------------------------------
 set (SEQUENCE_VERSION 0.2.0)
 project (sequence VERSION ${SEQUENCE_VERSION} LANGUAGES CXX)
-message(STATUS "Build sequence: ${SEQUENCE_VERSION}")
+message (STATUS "Build sequence: ${SEQUENCE_VERSION}")
 
 include (GNUInstallDirs)
 
@@ -109,11 +118,19 @@ if (SEQUENCE_FMT_EXTERNAL)
     message(DEBUG "Use external FMT")
 
     if (NOT TARGET fmt::fmt)
-        message(DEBUG "Find package fmt 6.2.1")
-        find_package (fmt 6.2.1 REQUIRED)
+        message(DEBUG "Find package fmt 6.2")
+        find_package (fmt 6.2 REQUIRED)
     endif()
-    target_compile_definitions(sequence PUBLIC SEQUENCE_FMT_EXTERNAL)
 
+    # Naughty way to ensure fmt headers are found when using w32 and VCPKG with CMake
+    # ref: https://github.com/microsoft/vcpkg/issues/798
+    if (WIN32 AND DEFINED CMAKE_TOOLCHAIN_FILE)
+        message (STATUS "Workaround to find fmt headers on win32 using VCPKG")
+        find_path(SYSTEM_INCLUDE_DIR fmt/format.h)
+        include_directories(${SYSTEM_INCLUDE_DIR})
+    endif()
+
+    target_compile_definitions(sequence PUBLIC SEQUENCE_FMT_EXTERNAL)
     target_link_libraries (sequence PRIVATE fmt::fmt)
 
     set (PKG_CONFIG_REQUIRES fmt) # add dependency to pkg-config
