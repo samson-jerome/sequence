@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    # - uses: actions/checkout@v2
     - name: "INFO: OS"
       run: uname -a
     - name: "INFO: gcc"
@@ -26,7 +26,7 @@ jobs:
     - name: "Configure sequence"
       run: cmake -S . -B build -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
 
-    - name: "Configure sequence"
+    - name: "Build sequence"
       run: cmake --build build --target sequence tests
 
     - name: "Run tests"
@@ -34,8 +34,9 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
-    - uses: actions/checkout@v2
+    # - uses: actions/checkout@v2
     - name: "Run tests"
       run: ./build/bin/tests
