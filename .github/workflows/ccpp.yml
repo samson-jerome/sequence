@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
 
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,5 +29,13 @@ jobs:
     - name: "Configure sequence"
       run: cmake --build build --target sequence tests
 
+    - name: "Run tests"
+      run: ./build/bin/tests
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
     - name: "Run tests"
       run: ./build/bin/tests
