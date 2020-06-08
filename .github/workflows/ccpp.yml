@@ -30,10 +30,19 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, windows-2016]
-    
+
+    steps:
+    - name: clone fmt
+        run: git clone https://github.com/fmtlib/fmt.git
+    - name: configure
+      run: cd fmt && mkdir build && cd build && cmake ..
+    - name: build
+      run: cmake --build build
+    - name: install
+      run: cmake --build build --target install
+
     steps:
     - uses: actions/checkout@v2
-
     - name: configure
       run: mkdir build && cd build && cmake .. -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
 

@@ -2,7 +2,7 @@
 Cross-platform (currently linux and windows) library to identify and handle list of names
 having a numerical token as a collection.
 
-![C/C++ CI](https://github.com/samson-jerome/sequence/workflows/C/C++%20CI/badge.svg)
+![C/C++ Build & Test](https://github.com/samson-jerome/sequence/workflows/C/C++%20CI/badge.svg)
 
 # Inspiration
 * Clique python module
@@ -45,3 +45,4 @@ having a numerical token as a collection.
 * https://opensource.org/licenses/MIT
 * https://exhale.readthedocs.io/en/latest/mastering_doxygen.html
 * https://cristianadam.eu/20191222/using-github-actions-with-c-plus-plus-and-cmake/
+* https://github.com/actions/starter-workflows/issues/53
