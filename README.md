@@ -44,3 +44,4 @@ having a numerical token as a collection.
 * https://api.csswg.org/bikeshed/?force=1&url=https://raw.githubusercontent.com/vector-of-bool/pitchfork/develop/data/spec.bs#submod.root
 * https://opensource.org/licenses/MIT
 * https://exhale.readthedocs.io/en/latest/mastering_doxygen.html
+* https://cristianadam.eu/20191222/using-github-actions-with-c-plus-plus-and-cmake/
