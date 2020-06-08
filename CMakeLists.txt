@@ -118,8 +118,8 @@ if (SEQUENCE_FMT_EXTERNAL)
     message(DEBUG "Use external FMT")
 
     if (NOT TARGET fmt::fmt)
-        message(DEBUG "Find package fmt 6.2")
-        find_package (fmt 6.2 REQUIRED)
+        message(DEBUG "Find package fmt")
+        find_package (fmt REQUIRED)
     endif()
 
     # Naughty way to ensure fmt headers are found when using w32 and VCPKG with CMake
