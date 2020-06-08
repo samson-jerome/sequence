@@ -23,7 +23,7 @@ namespace sequence {
     // - add parse method to construct a collection from a string pattern
     // - tests
 
-    tuple<vector<Collection>, vector<string>> assemble(vector<string> entries);
+    tuple<vector<Collection>, vector<string>> assemble(vector<string> entries, int minimum_items=1);
     // bool assemble(vector<string>, vector<Collection>* collections, vector<string>* remainders);
 
     Collection parse(string value);

@@ -5,18 +5,28 @@ having a numerical token as a collection.
 # Inspiration
 * Clique python module
 * rvls utility from TweakSoftware
+* fileseq - http://justinfx.com/gofileseq/cpp/index.html
 
 # Dependencies
 * C++11
 * cmake-3.5
-
-# Submodules
 * fmt-6.0.0
 
 # Roadmap
+## v0.2.1
+* refactor build (see spdlog build system) to use fmt:fmt from external
+* remove fmt submodule
+* add fmt as a bundled, driven by cmake options
+* add Install
+* add FindSequence.cmake
+
+## v0.2.2
+* refactor build add support for fmt::fmt from bundled source
+
 ## v0.3.0
 * support padding
-* allow frame insertion/removal
+* more constructors
+* Manipulating indexes, allow frame insertion/removal/update
 * support multiple formatting
 * full doc
 * better coverage
@@ -27,3 +37,8 @@ having a numerical token as a collection.
 # backlog
 * add flag to consider or ignore single frame collection
 * support variable padding
+
+# References
+* https://api.csswg.org/bikeshed/?force=1&url=https://raw.githubusercontent.com/vector-of-bool/pitchfork/develop/data/spec.bs#submod.root
+* https://opensource.org/licenses/MIT
+* https://exhale.readthedocs.io/en/latest/mastering_doxygen.html

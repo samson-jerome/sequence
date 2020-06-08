@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/@CMAKE_INSTALL_LIBDIR@
+
+Name: lib@PROJECT_NAME@
+Description: Cross-platform library to identify and handle list of names.
+URL: https://github.com/samson-jerome/@PROJECT_NAME@
+Version: @SEQUENCE_VERSION@
+CFlags: -I${includedir} @PKG_CONFIG_DEFINES@
+Libs: -L${libdir} -lsequence
+Requires: @PKG_CONFIG_REQUIRES@

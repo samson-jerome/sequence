@@ -1,0 +1,15 @@
+# Copyright(c) 2019 sequence authors
+# Distributed under the MIT License (http://opensource.org/licenses/MIT)
+
+# find_package(Threads REQUIRED)
+
+set(SEQUENCE_FMT_EXTERNAL @SEQUENCE_FMT_EXTERNAL@)
+set(config_targets_file @config_targets_file@)
+
+if(SEQUENCE_FMT_EXTERNAL)
+    include(CMakeFindDependencyMacro)
+    find_dependency(fmt CONFIG)
+endif()
+
+
+include("${CMAKE_CURRENT_LIST_DIR}/${config_targets_file}")
