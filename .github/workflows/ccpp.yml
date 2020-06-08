@@ -13,40 +13,32 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: "INFO: OS"
-      run: uname -a
-    - name: "INFO: gcc"
-      run: gcc --version
-    - name: "INFO: cmake"
-      run: cmake --version
-
-    - name: "Get fmt::fmt dependency"
+    - name: "Toolchain info"
+      run: uname -a && gcc --version && cmake --version
+    - name: "Install dependencies"
       run: sudo apt-get install -y libfmt-dev
-
-    - name: "Configure sequence"
+    - name: "Configure"
       run: cmake -S . -B build -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
-
-    - name: "Build sequence"
+    - name: "Build"
       run: cmake --build build --target sequence tests
-
-    - name: "Run tests"
-      run: ./build/bin/tests
-
     - name: "Run tests"
       run: cd build/bin && ./tests
 
-  # build-windows:
+  build-windows:
 
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [windows-latest, windows-2016]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, windows-2016]
     
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: configure
-  #     run: mkdir build && cd build && cmake ..
-  #   - name: build
-  #     run: cmake --build build --config Debug
-  #   - name: test
-  #     run: cd build && ctest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: configure
+      run: cmake -S . -b build -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
+
+    - name: build
+      run: cmake --build build --target sequence tests
+
+    - name: "Run tests"
+      run: cd build/bin && ./tests
