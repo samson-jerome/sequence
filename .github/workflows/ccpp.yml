@@ -21,7 +21,7 @@ jobs:
       run: cmake --version
 
     - name: "Get fmt::fmt dependency"
-      run: sudo apt-get install fmt fmt-devel
+      run: sudo apt-get install -y libfmt-dev libfmt
 
     - name: "Configure sequence"
       run: cmake -S . -B build -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
