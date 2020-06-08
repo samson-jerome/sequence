@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C/C++ Build & Test
 
 on:
   push:
@@ -32,14 +32,8 @@ jobs:
     - name: "Run tests"
       run: ./build/bin/tests
 
-  tests:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - uses: actions/checkout@v2
     - name: "Run tests"
-      run: ./build/bin/tests
+      run: cd build/bin && ./tests
 
   # build-windows:
 
