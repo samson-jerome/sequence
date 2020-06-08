@@ -20,11 +20,11 @@ jobs:
     - name: "INFO: cmake"
       run: cmake --version
 
-    - name: "Init submodules"
-      run: cd external && git submodule init && git submodule update && cd ..
+    - name: "Configure sequence"
+      run: cmake -S . -B build -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
 
-    - name: "Build sequence"
-      run: cmake -S . -B build && cmake --build build
+    - name: "Configure sequence"
+      run: cmake --build build --target sequence tests
 
     - name: "Run tests"
       run: ./build/bin/tests
