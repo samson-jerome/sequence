@@ -2,6 +2,8 @@
 Cross-platform (currently linux and windows) library to identify and handle list of names
 having a numerical token as a collection.
 
+![C/C++ CI](https://github.com/samson-jerome/sequence/workflows/C/C++%20CI/badge.svg)
+
 # Inspiration
 * Clique python module
 * rvls utility from TweakSoftware
