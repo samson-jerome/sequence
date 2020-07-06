@@ -68,17 +68,6 @@ if(SEQUENCE_FMT_EXTERNAL AND SEQUENCE_FMT_EXTERNAL_HO)
     message(FATAL_ERROR "SEQUENCE_FMT_EXTERNAL and SEQUENCE_FMT_EXTERNAL_HO are mutually exclusive")
 endif()
 
-# clang-tidy?
-# if(${CMAKE_VERSION} VERSION_GREATER "3.5")
-#     option(SPDLOG_TIDY "run clang-tidy" OFF)
-# endif()
-
-# if(SPDLOG_TIDY)
-#     set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
-#     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#     message(STATUS "Enabled clang-tidy")
-# endif()
-
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # ---------------------------------------------------------------------
 # Static/Shared library (shared not supported in windows yet)
@@ -95,12 +84,16 @@ if (SEQUENCE_BUILD_SHARED)
     add_library (sequence SHARED ${SEQUENCE_SRC} ${SEQUENCE_ALL_HEADERS})
     target_compile_definitions (sequence PUBLIC SEQUENCE_SHARED_LIB)
 
-    if (NOT SPDLOG_FMT_EXTERNAL AND NOT SPDLOG_FMT_EXTERNAL_HO)
+    if (NOT SEQUENCE_FMT_EXTERNAL AND NOT SEQUENCE_FMT_EXTERNAL_HO)
         target_compile_definitions (sequence PRIVATE FMT_EXPORT PUBLIC FMT_SHARED)
     endif()
 else ()
     message(DEBUG "Adding sequence as a static library")
     add_library (sequence STATIC ${SEQUENCE_SRC} ${SEQUENCE_ALL_HEADERS})
+
+	if (NOT SEQUENCE_FMT_EXTERNAL AND NOT SEQUENCE_FMT_EXTERNAL_HO)
+        target_compile_definitions (sequence PRIVATE FMT_EXPORT PUBLIC FMT_STATIC)
+    endif()
 endif()
 
 add_library(sequence::sequence ALIAS sequence)
@@ -122,6 +115,7 @@ if (SEQUENCE_FMT_EXTERNAL)
         find_package (fmt REQUIRED)
     endif()
 
+    # Is this still needed?
     # Naughty way to ensure fmt headers are found when using w32 and VCPKG with CMake
     # ref: https://github.com/microsoft/vcpkg/issues/798
     if (WIN32 AND DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -184,7 +178,7 @@ if (SEQUENCE_INSTALL)
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-    # if(NOT SPDLOG_FMT_EXTERNAL AND NOT SPDLOG_FMT_EXTERNAL_HO)
+    # if(NOT SEQUENCE_FMT_EXTERNAL AND NOT SEQUENCE_FMT_EXTERNAL_HO)
     #     install(DIRECTORY include/${PROJECT_NAME}/fmt/bundled/
     #             DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/fmt/bundled/")
     # endif()
