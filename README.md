@@ -2,7 +2,8 @@
 Cross-platform (currently linux and windows) library to identify and handle list of names
 having a numerical token as a collection.
 
-![C/C++ Build & Test](https://github.com/samson-jerome/sequence/workflows/C/C++%20CI/badge.svg)
+![Linux C/C++ Build & Test](https://github.com/samson-jerome/sequence/workflows/Linux%20C/C++%20Build%20&%20Test/badge.svg)
+![Windows C/C++ Build & Test](https://github.com/samson-jerome/sequence/workflows/Windows%20C/C++%20Build%20&%20Test/badge.svg)
 
 # Inspiration
 * Clique python module
