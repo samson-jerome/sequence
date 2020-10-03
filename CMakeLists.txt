@@ -1,3 +1,4 @@
+
 # Copyright(c) 2020 sequence authors Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required (VERSION 3.5)
@@ -118,6 +119,7 @@ if (SEQUENCE_FMT_EXTERNAL)
     # Is this still needed?
     # Naughty way to ensure fmt headers are found when using w32 and VCPKG with CMake
     # ref: https://github.com/microsoft/vcpkg/issues/798
+    message (STATUS "Is CMAKE_TOOLCHAIN_FILE defined? ${CMAKE_TOOLCHAIN_FILE}")
     if (WIN32 AND DEFINED CMAKE_TOOLCHAIN_FILE)
         message (STATUS "Workaround to find fmt headers on win32 using VCPKG")
         find_path(SYSTEM_INCLUDE_DIR fmt/format.h)

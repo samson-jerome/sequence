@@ -22,17 +22,17 @@ namespace sequence {
     // - set minimum items arg to match or not single number sequences
     // - add parse method to construct a collection from a string pattern
     // - tests
-
-    tuple<vector<Collection>, vector<string>> assemble(vector<string> entries, int minimum_items=1);
-    // bool assemble(vector<string>, vector<Collection>* collections, vector<string>* remainders);
-
-    Collection parse(string value);
-    // Collection parse(string value, string pattern);
-
     class parse_exception : public std::runtime_error {
     public:
         parse_exception(const string msg) : std::runtime_error(msg) {};
     };
-}
 
+    tuple<vector<Collection>, vector<string>> assemble(vector<string> entries, int minimum_items=1);
+    // bool assemble(vector<string>, vector<Collection>* collections, vector<string>* remainders);
+
+    //Collection parse(string value);
+    Collection parse(string entry, string pattern = "");
+    // Collection parse(string value, string pattern);
+
+}
 #endif // SEQUENCE_H

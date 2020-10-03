@@ -113,11 +113,31 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 // ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
 // '{head}{padding}{tail} [{ranges}]'
 // @todo parse against multiple patterns
-Collection sequence::parse(string entry) {
+Collection sequence::parse(string entry, string pattern) {
 
-    // cout << "entry = " << entry << endl;
+    //(^ (\D.*) % (\d + )d(.*) \[(\d + )\ - (\d + )\]$ | ^ (\D.*) % (\d + )d(.*)$)
+    //std::regex re("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$");
+    vector<string> regex_list;
+    string head_pattern = "([^\\r\\n\\t\\f\\v \\(\\)\\{\\}\\[\\]] *)";
+    string padding_pattern = "(%(\\d+)d|%d|(#+))";
+    string tail_pattern = "(\S+) *";
+    string global_range_pattern = "(\\[(\\d+)\\-(\\d+)\\])?";
+    string ranges_pattern = "\\[(\\d+)\\-(\\d+)\\]";
+    string holes_pattern = "\\[(\\d+)\\-(\\d+)\\]";
+    //(? P<ranges>[\d, \ - ] + ) ?
+    //regex_list.push_back("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$");
+    //regex_list.push_back("^(\\D.*)(#*)(.*) \\[(\\d+)\\-(\\d+)\\]$");
 
-    std::regex re("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$");
+    string regex_pattern = "^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$";
+    if (pattern != "") {
+        // Build pattern from a set of allowed tokens: 
+        // {head}{padding}{ext}{global_range}{ranges}{holes}
+    }
+
+    cout << "DBG: entry = " << entry << endl;
+    cout << "DBG: pattern = " << pattern << endl;
+    cout << "DBG: regex_pattern = " << regex_pattern << endl;
+    std::regex re(regex_pattern);
     std::smatch match;
     string head, tail;
     int start, end, padding;
@@ -128,7 +148,7 @@ Collection sequence::parse(string entry) {
         // for (int i=0; i<match.size()-1; i++) cout << match.position(i) << ", ";
         // cout << match.position(match.size()) << endl;
 
-        head = entry.substr(match.position(1), match.position(2) - 1);
+        //head = entry.substr(match.position(1), match.position(2) - 1);
         head = match.str(1);
         padding = stoi(match.str(2));
         tail = match.str(3);
