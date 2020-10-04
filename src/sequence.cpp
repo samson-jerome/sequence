@@ -115,49 +115,76 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 // @todo parse against multiple patterns
 Collection sequence::parse(string entry, string pattern) {
 
-    //(^ (\D.*) % (\d + )d(.*) \[(\d + )\ - (\d + )\]$ | ^ (\D.*) % (\d + )d(.*)$)
-    //std::regex re("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$");
-    vector<string> regex_list;
-    string head_pattern = "([^\\r\\n\\t\\f\\v \\(\\)\\{\\}\\[\\]] *)";
-    string padding_pattern = "(%(\\d+)d|%d|(#+))";
-    string tail_pattern = "(\S+) *";
-    string global_range_pattern = "(\\[(\\d+)\\-(\\d+)\\])?";
-    string ranges_pattern = "\\[(\\d+)\\-(\\d+)\\]";
-    string holes_pattern = "\\[(\\d+)\\-(\\d+)\\]";
-    //(? P<ranges>[\d, \ - ] + ) ?
+    // REGEX101 testting: https://regex101.com/r/4PcvVR/1
+
+    // vector<string> regex_list;
+    string head_pattern = "([^\\r\\n\\t\\f\\v \\(\\)\\{\\}\\[\\]#]*)";
+    string padding_pattern = "(%(\\d+)d|(%d)|(#+))";
+    string tail_pattern = "(\\S+) *";
+    string global_range_pattern = "(\\[(\\d+)\\-(\\d+)\\])";
+    // string ranges_pattern = "\\[(\\d+)\\-(\\d+)\\]";
+    // string holes_pattern = "(\\[(\\d+)\\-(\\d+)\\])?";
+
+    // frame.%04d.exr [1050-1080]
+    // frame.###.exr [1050-1080]
+    // frame.%d.exr [1050-1080]
+    // frame.%d.exr[1050-1080]
+    // frame.[1050-1080].exr
+    
+    // clique ranges: (? P<ranges>[\d,\-]+) ?
+
     //regex_list.push_back("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$");
     //regex_list.push_back("^(\\D.*)(#*)(.*) \\[(\\d+)\\-(\\d+)\\]$");
 
-    string regex_pattern = "^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$";
+    string regex_pattern = fmt::format("^{0}{1}{2}{3}$", head_pattern, padding_pattern, tail_pattern, global_range_pattern);
     if (pattern != "") {
         // Build pattern from a set of allowed tokens: 
         // {head}{padding}{ext}{global_range}{ranges}{holes}
     }
 
-    cout << "DBG: entry = " << entry << endl;
-    cout << "DBG: pattern = " << pattern << endl;
-    cout << "DBG: regex_pattern = " << regex_pattern << endl;
+    // cout << "DBG: entry = " << entry << endl;
+    // cout << "DBG: pattern = " << pattern << endl;
+    // cout << "DBG: regex_pattern = " << regex_pattern << endl;
     std::regex re(regex_pattern);
     std::smatch match;
-    string head, tail;
-    int start, end, padding;
 
     if (regex_search(entry, match, re) && match.size() > 1) {
         // cout << "matches = " << match.size() << endl;
         // cout << "matches pos = ";
         // for (int i=0; i<match.size()-1; i++) cout << match.position(i) << ", ";
         // cout << match.position(match.size()) << endl;
-
-        //head = entry.substr(match.position(1), match.position(2) - 1);
-        head = match.str(1);
-        padding = stoi(match.str(2));
-        tail = match.str(3);
-        start = stoi(match.str(4));
-        end = stoi(match.str(5));
-
+        string head, tail, range;
+        int padding, start, end;
+        string general_padding, no_padding, hash_padding;
         vector<int> indexes;
-        for (int i = start; i <= end; i++) {
-            indexes.push_back(i);
+
+        cout << "Matches: " << endl;
+        int i = 0;
+        for(auto m : match) { cout << "  - " << i << ": " << m << endl; i++; }
+
+        head = match.str(1);
+        general_padding = match.str(2);
+        padding = stoi(match.str(3));
+        no_padding = match.str(4);
+        hash_padding = match.str(5);
+        tail = match.str(6);
+        range = match.str(7);
+        start = stoi(match.str(8));
+        end = stoi(match.str(9));
+
+        cout << "DBG: head = " << head << endl;
+        cout << "DBG: padding = " << padding << endl;
+        cout << "DBG: no_padding = " << no_padding << endl;
+        cout << "DBG: hash_padding = " << hash_padding << endl;
+        cout << "DBG: tail = " << tail << endl;
+        cout << "DBG: range = " << range << endl;
+        cout << "DBG: start = " << start << endl;
+        cout << "DBG: end = " << end << endl;
+
+        if(range != "") {
+            for (int i = start; i <= end; i++) {
+                indexes.push_back(i);
+            }
         }
 
         Collection coll(head, tail, indexes, padding);

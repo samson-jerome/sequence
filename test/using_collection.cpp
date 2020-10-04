@@ -35,8 +35,8 @@ TEST_CASE("gettings items", "[collection]") {
 }
 
 // --------------------------------------------------------------------------
-// 
-TEST_CASE("inserting/removing items", "[collection]") {
-	vector<sequence::Collection> collections;
+// @todo
+// TEST_CASE("inserting/removing items", "[collection]") {
+// 	vector<sequence::Collection> collections;
 
-}
+// }

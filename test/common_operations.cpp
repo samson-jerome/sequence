@@ -278,6 +278,7 @@ TEST_CASE("Parsing successs with various correct formats"){
 
   REQUIRE(sequence::parse("frame.%04d.exr [1050-1080]").format() == "frame.[1050:1080].exr");
   REQUIRE(sequence::parse("frame%03d.tga [001-100]").format() == "frame[001:100].tga");
+  REQUIRE(sequence::parse("frame%03d.tga[001-100]").format() == "frame[001:100].tga");
 
   cout << endl;
 
