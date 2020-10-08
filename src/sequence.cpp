@@ -131,6 +131,8 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 // ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
 // '{head}{padding}{tail} [{ranges}]'
 // @todo parse against multiple patterns
+// @todo refactor to support negative frames: separator can't be  '-'
+// @todo support parsing when step <> 1 i.e. "1:100x2"
 Collection sequence::parse(string entry, string pattern) {
 
     // REGEX101 testting: https://regex101.com/r/4PcvVR/1
@@ -162,7 +164,7 @@ Collection sequence::parse(string entry, string pattern) {
         // {head}{padding}{ext}{global_range}{ranges}{holes}
     }
 
-    cout << "DBG: entry = " << entry << endl;
+    // cout << "DBG: entry = " << entry << endl;
     // cout << "DBG: pattern = " << pattern << endl;
     // cout << "DBG: regex_pattern = " << regex_pattern << endl;
     std::regex re(regex_pattern);
@@ -195,14 +197,14 @@ Collection sequence::parse(string entry, string pattern) {
         //start = stoi(match.str(8));
         //end = stoi(match.str(9));
 
-        cout << "DBG: head = " << head << endl;
-        cout << "DBG: padding = " << d_padding << endl;
-        cout << "DBG: no_padding = " << no_padding << endl;
-        cout << "DBG: hash_padding = " << hash_padding << endl;
-        cout << "DBG: tail = " << tail << endl;
-        //cout << "DBG: range = " << range << endl;
-        //cout << "DBG: global_range = " << global_range << endl;
-        cout << "DBG: ranges = " << ranges << endl;
+        // cout << "DBG: head = " << head << endl;
+        // cout << "DBG: padding = " << d_padding << endl;
+        // cout << "DBG: no_padding = " << no_padding << endl;
+        // cout << "DBG: hash_padding = " << hash_padding << endl;
+        // cout << "DBG: tail = " << tail << endl;
+        // //cout << "DBG: range = " << range << endl;
+        // //cout << "DBG: global_range = " << global_range << endl;
+        // cout << "DBG: ranges = " << ranges << endl;
 
         if(d_padding != "") {
             num_padding = stoi(d_padding);

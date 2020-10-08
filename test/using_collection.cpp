@@ -8,7 +8,7 @@ using std::endl;
 
 // --------------------------------------------------------------------------
 // 
-TEST_CASE("gettings items", "[collection]") {
+TEST_CASE("gettings items", "collection") {
     vector<sequence::Collection> collections;
     vector<std::string> remainders;
     vector<std::string> items;
