@@ -348,7 +348,7 @@ TEST_CASE("Parsing successs with various correct formats", "[parsing]"){
 
     res = test_parser(
         "head.%d.tail [1-10,20-30,40-50]",
-        get_mock("head.", ".tail", "head.[1:10,20:30,40:50].tail", "head .tail 1:10,20:30,40:50 1:50 0 ",
+        get_mock("head.", ".tail", "head.[1:10,20:30,40:50].tail", "head. .tail 1:50 1:10,20:30,40:50 0 11,12,13,14,15,16,17,18,19,31,32,33,34,35,36,37,38,39",
             32, 0, 1, 50)
     );
     CHECK(res.size() == 0);
