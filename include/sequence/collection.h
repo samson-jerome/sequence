@@ -14,6 +14,8 @@
 
 #include "fmt/format.h"
 
+//#include "sequence.h"
+
 using namespace fmt::literals;
 using std::cout;
 using std::endl;
@@ -70,6 +72,9 @@ namespace sequence {
         std::string m_head = "";    //< head part of the collection
         std::string m_tail = "";    //< tail part of the collection
         int m_padding = 0;          //< size of zero-padded indexes
+        //std::string m_frame_separator{ sequence::frame_separator };   // @audit verify that we're passing the value and not the address of the original literal
+        //std::string m_step_separator{ step_separator };
+        //std::string m_range_separator{ range_separator  };
         std::string m_frame_separator = ":";
         std::string m_step_separator = "x";
         std::string m_range_separator = ",";
@@ -82,9 +87,11 @@ namespace sequence {
     public:
         Collection();
         Collection(const sequence::Collection &c);
-        Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
+        //Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes);
+        Collection(const std::string& head, const std::string& tail, const std::set<int>& indexes);
         Collection(const std::string& head, const std::string& tail, const int start, const int end);
-        Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
+        //Collection(const std::string &head,const std::string &tail, const std::vector<int> &indexes, const int padding);
+        Collection(const std::string& head, const std::string& tail, const std::set<int>& indexes, const int padding);
         Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding);
 
         // =====================================================================

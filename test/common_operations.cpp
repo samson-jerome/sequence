@@ -19,8 +19,8 @@ using sequence::assemble;
 using sequence::parse;
 
 struct MockCollection{
-    string head, tail, format, full_format;
-    int count, padding, first, last;
+    string head="", tail="", format="", full_format="";
+    int count=0, padding=0, first=0, last=0;
 //    vector<int> indices, holes;
 };
 
@@ -298,60 +298,104 @@ TEST_CASE("Parsing successs with various correct formats", "[parsing]"){
     vector<string> res;
 
     res = test_parser(
-        "head.%d.tail [0-9]",
+        "head.%d.tail [0:9]",
         get_mock("head.", ".tail", "head.[0:9].tail", "head. .tail 0:9 0:9 0 ",
             10, 0, 0, 9)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head.%04d.tail [1-100]",
+        "head.%04d.tail [1:100]",
         get_mock("head.", ".tail", "head.[0001:0100].tail", "head. .tail 0001:0100 0001:0100 4 ",
             100, 4, 1, 100)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head.%d.tail [1-100]",
+        "head.%d.tail [1:100]",
         get_mock("head.", ".tail", "head.[1:100].tail", "head. .tail 1:100 1:100 0 ",
             100, 0, 1, 100)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head.####.tail [1-10]",
+        "head.####.tail [1:10]",
         get_mock("head.", ".tail", "head.[0001:0010].tail", "head. .tail 0001:0010 0001:0010 4 ",
             10, 4, 1, 10)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head.%1d.tail [1-10]",
+        "head.%1d.tail [1:10]",
         get_mock("head.", ".tail", "head.[1:10].tail", "head. .tail 1:10 1:10 1 ",
             10, 1, 1, 10)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head%d.tail [1-10]",
+        "head%d.tail [1:10]",
         get_mock("head", ".tail", "head[1:10].tail", "head .tail 1:10 1:10 0 ",
             10, 0, 1, 10)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head.%dtail [1-10]",
+        "head.%dtail [1:10]",
         get_mock("head.", "tail", "head.[1:10]tail", "head. tail 1:10 1:10 0 ",
             10, 0, 1, 10)
     );
     CHECK(res.size() == 0);
 
     res = test_parser(
-        "head.%d.tail [1-10,20-30,40-50]",
+        "head.%d.tail [1:10,20:30,40:50]",
         get_mock("head.", ".tail", "head.[1:10,20:30,40:50].tail", "head. .tail 1:50 1:10,20:30,40:50 0 11,12,13,14,15,16,17,18,19,31,32,33,34,35,36,37,38,39",
             32, 0, 1, 50)
     );
     CHECK(res.size() == 0);
+
+    res = test_parser(
+        "head.%d.tail [1, 4,5]",
+        get_mock("head.", ".tail", "head.[1,4,5].tail", "head. .tail 1:5 1,4,5 0 2,3",
+            3, 0, 1, 5)
+    );
+    CHECK(res.size() == 0);
+
+    res = test_parser(
+        "head.%d.tail [1 ,3, 5]",
+        get_mock("head.", ".tail", "head.[1:5x2].tail", "head. .tail 1:5 1:5x2 0 2,4",
+            3, 0, 1, 5)
+    );
+    CHECK(res.size() == 0);
+
+    // Negative ranges
+    res = test_parser(
+        "head.%d.tail [-2:5]",
+        get_mock("head.", ".tail", "head.[-2:5].tail", "head. .tail -2:5 -2:5 0 ",
+            8, 0, -2, 5)
+    );
+    CHECK(res.size() == 0);
+
+    res = test_parser(
+        "head.%d.tail [-5:-1]",
+        get_mock("head.", ".tail", "head.[-5:-1].tail", "head. .tail -5:-1 -5:-1 0 ",
+            5, 0, -5, -1)
+    );
+    CHECK(res.size() == 0);
+
+    res = test_parser(
+        "head.%d.tail [-5, -3, -1]",
+        get_mock("head.", ".tail", "head.[-5:-1x2].tail", "head. .tail -5:-1 -5:-1x2 0 -4,-2",
+            3, 0, -5, -1)
+    );
+    CHECK(res.size() == 0);
+
+    res = test_parser(
+        "head.###.tail [-2:2]",
+        get_mock("head.", ".tail", "head.[-002:002].tail", "head. .tail -002:002 -002:002 3 ",
+            5, 3, -2, 2)
+    );
+    CHECK(res.size() == 0);
+
     // REQUIRE(sequence::parse("frame.%d.ext [1-10,20-30,40-50]").format() == "frame.[1:10,20:30,40:50].ext");
     // REQUIRE(sequence::parse("frame.%d.ext [10,20,30,40,50]").format() == "frame.[10:50x10].ext");
     // REQUIRE(sequence::parse("frame.%d.ext [10,25,32,41]").format() == "frame.[10,25,32,41].ext");

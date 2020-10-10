@@ -20,11 +20,19 @@ Collection::Collection(const sequence::Collection &c) {
         m_ranges.push_back(range);
 }
 
-Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indices) 
+//Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indices) 
+//    :m_head(head), m_tail(tail), m_padding(0)
+//{
+//    m_indices = std::set<int> (indices.begin(), indices.end());
+//
+//    this->_findHoles();
+//    this->_separate();
+//}
+
+Collection::Collection(const std::string& head, const std::string& tail, const std::set<int>& indices)
     :m_head(head), m_tail(tail), m_padding(0)
 {
-    m_indices = std::set<int> (indices.begin(), indices.end());
-    // cout << "indices = "; for(auto f:m_indices) {cout << f << " ";} cout << endl;
+    m_indices = indices;
 
     this->_findHoles();
     this->_separate();
@@ -40,10 +48,19 @@ Collection::Collection(const std::string& head, const std::string& tail, const i
     this->_separate();
 }
 
-Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> & indices, const int padding)
+//Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> & indices, const int padding)
+//    :m_head(head), m_tail(tail), m_padding(padding)
+//{
+//    m_indices = std::set<int> (indices.begin(), indices.end());
+//
+//    this->_findHoles();
+//    this->_separate();
+//}
+
+Collection::Collection(const std::string& head, const std::string& tail, const std::set<int>& indices, const int padding)
     :m_head(head), m_tail(tail), m_padding(padding)
 {
-    m_indices = std::set<int> (indices.begin(), indices.end());
+    m_indices = indices;
 
     this->_findHoles();
     this->_separate();

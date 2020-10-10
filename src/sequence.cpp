@@ -117,7 +117,7 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
         Collection currentCollection(
             hash_head,
             hash_tail,
-            indexes,
+            std::set<int>(indexes.begin(), indexes.end()),
             padding
             );
 
@@ -133,30 +133,23 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 // @todo parse against multiple patterns
 // @todo refactor to support negative frames: separator can't be  '-'
 // @todo support parsing when step <> 1 i.e. "1:100x2"
+// Currently supporting:
+// frame.%04d.exr [1050-1080]
+// frame.###.exr [1050-1080]
+// frame.%d.exr [1050-1080]
+// frame.%d.exr[1050-1080]
+// frame.[1050- 1080].exr
+// frame.%03d.exr[1050-1080, 1100, 1105-1110]
+// frame.%03d.exr[1050, 1080, 1090]
 Collection sequence::parse(string entry, string pattern) {
 
-    // REGEX101 testting: https://regex101.com/r/4PcvVR/1
-
     // vector<string> regex_list;
+
+    // @audit how can we use the constants in sequence.h into the regex
     string head_pattern = "([^\\r\\n\\t\\f\\v \\(\\)\\{\\}\\[\\]#]*)";
     string padding_pattern = "(%(\\d+)d|(%d)|(#+))";
     string tail_pattern = "(\\S+) *";
-    //string global_range_pattern = "(\\[(\\d+)\\-(\\d+)\\])";
-    string ranges_pattern = "\\[([\\d\\, \\ \\-]+)?\\]";
-    //string range_pattern = fmt::format("({0}|{1})", global_range_pattern, ranges_pattern);
-    
-    // frame.%04d.exr [1050-1080]
-    // frame.###.exr [1050-1080]
-    // frame.%d.exr [1050-1080]
-    // frame.%d.exr[1050-1080]
-    // frame.[1050- 1080].exr
-    // frame.%03d.exr[1050-1080, 1100, 1105-1110]
-    // frame.%03d.exr[1050, 1080, 1090]
-    
-    // clique ranges: (? P<ranges>[\d,\-]+) ?
-
-    //regex_list.push_back("^(\\D.*)%(\\d+)d(.*) \\[(\\d+)\\-(\\d+)\\]$");
-    //regex_list.push_back("^(\\D.*)(#*)(.*) \\[(\\d+)\\-(\\d+)\\]$");
+    string ranges_pattern = "\\[([\\d\\, \\ \\-\\:]+)?\\]";
 
     string regex_pattern = fmt::format("^{0}{1}{2}{3}$", head_pattern, padding_pattern, tail_pattern, ranges_pattern);
     if (pattern != "") {
@@ -171,39 +164,24 @@ Collection sequence::parse(string entry, string pattern) {
     std::smatch match;
 
     if (regex_search(entry, match, re) && match.size() > 1) {
-        // cout << "matches = " << match.size() << endl;
-        // cout << "matches pos = ";
-        // for (int i=0; i<match.size()-1; i++) cout << match.position(i) << ", ";
-        // cout << match.position(match.size()) << endl;
         string head, tail, range;
         int num_padding, start, end;
-        string general_padding, d_padding, no_padding, hash_padding, ranges, global_range;
-        vector<int> indexes;
+        string d_padding, no_padding, hash_padding, ranges;
         set<int> raw_indexes;
-
-        //cout << "Matches: " << endl;
-        //int i = 0;
-        //for(auto m : match) { cout << "  - " << i << ": " << m << endl; i++; }
+        vector<string> ranges_list;
 
         head = match.str(1);
-        //general_padding = match.str(2); // the whole padding group, i.e. "%4d" or "%d" or "####"
         d_padding = match.str(3);       // the padding value as an int: "%4d" > 4
         no_padding = match.str(4);      // the string %d if found
         hash_padding = match.str(5);    // the hash padded string if found
         tail = match.str(6);
-        //range = match.str(7);  // any potential range: global range n-m or a list of ranges n-m,x-z...
-        //global_range = match.str(8);  // a global range if found: n-m
         ranges = match.str(7);          // a list of ranges if found: n-m,x-z...
-        //start = stoi(match.str(8));
-        //end = stoi(match.str(9));
 
         // cout << "DBG: head = " << head << endl;
         // cout << "DBG: padding = " << d_padding << endl;
         // cout << "DBG: no_padding = " << no_padding << endl;
         // cout << "DBG: hash_padding = " << hash_padding << endl;
         // cout << "DBG: tail = " << tail << endl;
-        // //cout << "DBG: range = " << range << endl;
-        // //cout << "DBG: global_range = " << global_range << endl;
         // cout << "DBG: ranges = " << ranges << endl;
 
         if(d_padding != "") {
@@ -221,38 +199,40 @@ Collection sequence::parse(string entry, string pattern) {
             //    1-5,10,20-25...
             //    1,2,5...
             //    1-5
-
-            // 
-            vector<string> ranges_list = split(ranges, ',');
+            ranges_list = split(ranges, sequence::range_separator);
             for (auto r : ranges_list) {
-                size_t delim_found = r.find('-');
+                try {
+                    // We will assume the ranges are valid (correct numbers, no extra delim)
+                    // otherwise parse_exception is thrown
 
-                // Is this a range or single frame
-                if (delim_found != string::npos) {
-                    
-                    // Is there any other delimiter left in the range
-                    if (r.find('-', delim_found+1) != string::npos)
-                        throw parse_exception("invalid range syntax");
+                    size_t delim_found = r.find(sequence::frame_separator);
 
-                    // Range is valid, loop to add all numbers
-                    int start = stoi(r.substr(0, delim_found));
-                    int end = stoi(r.substr(delim_found+1));
-                    for (int i = start; i <= end; i++) {
-                        raw_indexes.insert(i);
+                    // Is this a range or single frame
+                    if (delim_found != string::npos) {
+
+                        // Is there any other delimiter left in the range
+                        //if (r.find(sequence::frame_separator, delim_found + 1) != string::npos)
+                        //    throw parse_exception("invalid range syntax");
+
+                        // Range is valid, loop to add all numbers
+                        int start = stoi(r.substr(0, delim_found));
+                        int end = stoi(r.substr(delim_found + 1));
+                        for (int i = start; i <= end; i++) {
+                            raw_indexes.insert(i);
+                        }
+                    }
+                    else {
+                        // this is a single frame
+                        raw_indexes.insert(stoi(r));
                     }
                 }
-                else {
-                    // this is a single frame
-                    raw_indexes.insert(stoi(r));
+                catch (...) {
+                    throw parse_exception(fmt::format("invalid range syntax: {}", r));
                 }
             }
-            
-            // Get all these into the expected Collection indexes vector
-            // @todo add a constructor to accept a set of indexes
-            std::copy(raw_indexes.begin(), raw_indexes.end(), std::back_inserter(indexes));
         }
 
-        Collection coll(head, tail, indexes, num_padding);
+        Collection coll(head, tail, raw_indexes, num_padding);
         return coll;
     }
     else {

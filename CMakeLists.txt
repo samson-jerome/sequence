@@ -1,8 +1,16 @@
-
-# Copyright(c) 2020 sequence authors Distributed under the MIT License (http://opensource.org/licenses/MIT)
+# Copyright(c) 2020 sequence authors
+# Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required (VERSION 3.5)
 
+# ---------------------------------------------------------------------
+# Project setup
+# ---------------------------------------------------------------------
+include(cmake/utils.cmake)
+extract_version()
+
+project (sequence VERSION ${SEQUENCE_VERSION} LANGUAGES CXX)
+message (STATUS "Build sequence: ${SEQUENCE_VERSION}")
 
 if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
@@ -16,13 +24,6 @@ endif()
 set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-# ---------------------------------------------------------------------
-# Project setup
-# ---------------------------------------------------------------------
-set (SEQUENCE_VERSION 0.2.0)
-project (sequence VERSION ${SEQUENCE_VERSION} LANGUAGES CXX)
-message (STATUS "Build sequence: ${SEQUENCE_VERSION}")
 
 include (GNUInstallDirs)
 
