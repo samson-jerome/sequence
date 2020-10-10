@@ -13,7 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, windows-2016]
+        os: [windows-latest]
+#        os: [windows-latest, windows-2016]
     steps:
     - uses: actions/checkout@v2
       
@@ -29,8 +30,8 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake .. -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1  -Dfmt_DIR="C:\\Program Files (x86)\\FMT\\lib\\cmake\\fmt\\fmt-config.cmake"
       
-      run: dir C:\\Program Files (x86)\\FMT\\
-      run: dir C:\\Program Files (x86)\\FMT\\lib
+    - name: search include dir
+      run: dir C:\\Program Files (x86)\\FMT\\ && dir C:\\Program Files (x86)\\FMT\\lib
 
     - name: build
       run: cmake  -DCMAKE_CXX_FLAGS=-isystem\ /path/to/include --build build --target sequence tests
