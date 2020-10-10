@@ -455,7 +455,7 @@ void Collection::_separate(int minimum_items){
 
     else if (m_indices.size() == 2) {
         // 2 indexes collection are always treated as 2 single frames if not consecutives
-        // TODO if not consistent when more than 3 where list is: 1,2,8 for instance > considere it as a range
+        // TODO if not consistent when more than 3 where list is: 1,2,8 for instance > consider it as a range
         r.isSingleFrame = true;
         r.start = *(m_indices.begin());
         r.end = r.start;
