@@ -34,7 +34,7 @@ jobs:
       run: dir "C:\\Program Files (x86)\\FMT"
 
     - name: build
-      run: cmake  -DCMAKE_CXX_FLAGS=-isystem\ "C:\\Program Files (x86)\\FMT\\include" --build build --target sequence tests
+      run: CXXFLAGS="-I \"C:\\Program Files (x86)\\FMT\\include\"" cmake --build build --target sequence tests
 
     - name: "Run tests"
       run: cd build/bin && ./tests

@@ -280,7 +280,7 @@ std::string Collection::format(std::string pattern) {
     int padding = m_padding;
 
     // Get global range i.e. "first-last"
-    global_range = fmt::format("{first:0>{padding}}{sep}{last:0>{padding}}", 
+    global_range = fmt::format("{first:-0{padding}}{sep}{last:0>{padding}}", 
         "first"_a=first(),
         "last"_a=last(),
         "sep"_a=m_frame_separator,
@@ -290,15 +290,15 @@ std::string Collection::format(std::string pattern) {
     // Get all range i.e. "1-10" or "1-10,15,20"...
     for(Range r : m_ranges){
         if(r.isSingleFrame) {
-            ranges += fmt::format("{index:0>{padding}}", "index"_a=r.start,
+            ranges += fmt::format("{index:-0{padding}}", "index"_a=r.start,
                 "padding"_a=m_padding) + m_range_separator;
         } else {
             std::string val;
             if(r.step == 1){
-                val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}", "start"_a=r.start, "end"_a=r.end,
+                val = fmt::format("{start:-0{padding}}{sep}{end:-0{padding}}", "start"_a=r.start, "end"_a=r.end,
                     "padding"_a=m_padding, "sep"_a=m_frame_separator);
             } else {
-                val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
+                val = fmt::format("{start:-0{padding}}{sep}{end:-0{padding}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
                     "step"_a=r.step, "padding"_a=m_padding,
                     "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
             }
