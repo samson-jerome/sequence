@@ -39,7 +39,7 @@ jobs:
       run: |
         dir build
         dir build\bin
-        dir .
+        dir build\bin\Debug
 
     - name: Run tests
-      run: cd build\bin && .\tests
+      run: cd build\bin\Debug && .\tests
