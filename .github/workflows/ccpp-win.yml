@@ -46,11 +46,11 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake .. -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1 -Dfmt_DIR="C:\\Program Files (x86)\\FMT\\lib\\cmake\\fmt\\fmt-config.cmake" -DCMAKE_TOOLCHAIN_FILE=${{github.workspace }}/../vcpkg/scripts/buildsystems/vcpkg.cmake
 
-    - name: search include dir
-      run: dir "C:\\Program Files (x86)\\FMT"
+#    - name: search include dir
+#      run: dir "C:\\Program Files (x86)\\FMT"
 
-    - name: search include dir
-      run: dir "C:\\Program Files (x86)\\FMT\\include"
+#    - name: search include dir
+#      run: dir "C:\\Program Files (x86)\\FMT\\include"
 
     - name: build
 #      run: export CXXFLAGS=-I "C:\\Program Files (x86)\\FMT\\include" && cmake --build build --target sequence tests
