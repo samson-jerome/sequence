@@ -41,5 +41,5 @@ jobs:
       run: cmake --build build --target sequence tests 
 
     - name: "Run tests"
-      run: cd build/bin && ./tests
+#      run: cd build/bin && ./tests
       run: ctest -C $BUILD_TYPE
