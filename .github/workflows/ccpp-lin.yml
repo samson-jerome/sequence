@@ -13,13 +13,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: "Toolchain info"
       run: uname -a && gcc --version && cmake --version
+
     - name: "Install dependencies"
       run: sudo apt-get install -y libfmt-dev
+
     - name: "Configure"
       run: cmake -S . -B build -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1
+
     - name: "Build"
       run: cmake --build build --target sequence tests
+
     - name: "Run tests"
       run: cd build/bin && ./tests
