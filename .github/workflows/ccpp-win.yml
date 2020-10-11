@@ -35,5 +35,11 @@ jobs:
     - name: Build sequence lib
       run: cmake --build build --target sequence tests
 
+    - name: Search tests
+      run: |
+        dir build
+        dir build\bin
+        dir .
+
     - name: Run tests
       run: cd build\bin && .\tests
