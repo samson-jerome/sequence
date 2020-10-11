@@ -33,8 +33,11 @@ jobs:
     - name: search include dir
       run: dir "C:\\Program Files (x86)\\FMT"
 
+    - name: search include dir
+      run: dir "C:\\Program Files (x86)\\FMT\\include"
+
     - name: build
-      run: CXXFLAGS="-I \"C:\\Program Files (x86)\\FMT\\include\"" cmake --build build --target sequence tests
+      run: export CXXFLAGS=-I "C:\\Program Files (x86)\\FMT\\include" && cmake --build build --target sequence tests
 
     - name: "Run tests"
       run: cd build/bin && ./tests
