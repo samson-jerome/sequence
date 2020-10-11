@@ -28,7 +28,7 @@ jobs:
       run: cd fmt && cmake --build build --target install
 
     - name: configure
-      run: mkdir build && cd build && cmake .. -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1  -Dfmt_DIR="C:\\Program Files (x86)\\FMT\\lib\\cmake\\fmt\\fmt-config.cmake"
+      run: mkdir build && cd build && cmake .. -DSEQUENCE_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Release -DSEQUENCE_FMT_EXTERNAL=1 -Dfmt_DIR="C:\\Program Files (x86)\\FMT\\lib\\cmake\\fmt\\fmt-config.cmake" -DCMAKE_CXX_FLAGS=-I "C:\\Program Files (x86)\\FMT\\include"
       
     - name: search include dir
       run: dir "C:\\Program Files (x86)\\FMT"
@@ -38,7 +38,8 @@ jobs:
 
     - name: build
 #      run: export CXXFLAGS=-I "C:\\Program Files (x86)\\FMT\\include" && cmake --build build --target sequence tests
-      run: cmake -DCMAKE_CXX_FLAGS=-I "C:\\Program Files (x86)\\FMT\\include" --build build --target sequence tests 
+      run: cmake --build build --target sequence tests 
 
     - name: "Run tests"
       run: cd build/bin && ./tests
+      run: ctest -C $BUILD_TYPE
