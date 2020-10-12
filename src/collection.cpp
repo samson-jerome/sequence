@@ -272,34 +272,44 @@ void Collection::info() {
  * \return a string
 */
 std::string Collection::format(std::string pattern) {
-    std::string head= m_head;
-    std::string tail = m_tail;
+    // Note: fmt formatting for integer is "sign-aware" as explained in this thread.
+    // https://stackoverflow.com/questions/64305897/using-fmtlib-zero-padded-numerical-value-are-shorter-when-the-value-is-negative/64311447#64311447
+    //fmt::print("{0:0{1}}\n", x, x < 0 ? 5 : 4); // prints -0002 and 0002
+
+    //std::string head= m_head;
+    //std::string tail = m_tail;
     std::string holes= "";
     std::string ranges = "";
     std::string global_range = "";
-    int padding = m_padding;
+    std::string val;
+    int padding_start, padding_end;
 
     // Get global range i.e. "first-last"
-    global_range = fmt::format("{first:-0{padding}}{sep}{last:0>{padding}}", 
-        "first"_a=first(),
-        "last"_a=last(),
-        "sep"_a=m_frame_separator,
-        "padding"_a=m_padding
+    global_range = fmt::format("{first:0{padding_first}}{sep}{last:0{padding_last}}",
+        "first"_a = first(),
+        "last"_a = last(),
+        "sep"_a = m_frame_separator,
+        "padding_first"_a = (first() < 0 ? m_padding+1 : m_padding),
+        "padding_last"_a= (last() < 0 ? m_padding + 1 : m_padding)
     );
 
-    // Get all range i.e. "1-10" or "1-10,15,20"...
+    // Get all range i.e. "1,10" or "1-10,15,20"...
     for(Range r : m_ranges){
         if(r.isSingleFrame) {
-            ranges += fmt::format("{index:-0{padding}}", "index"_a=r.start,
-                "padding"_a=m_padding) + m_range_separator;
+            ranges += fmt::format("{index:0{padding}}", 
+                "index"_a=r.start, 
+                "padding"_a=(r.start<0 ? m_padding+1 : m_padding))
+                + m_range_separator;
         } else {
-            std::string val;
+            padding_start = r.start < 0 ? m_padding + 1 : m_padding;
+            padding_end = r.end < 0 ? m_padding + 1 : m_padding;
+
             if(r.step == 1){
-                val = fmt::format("{start:-0{padding}}{sep}{end:-0{padding}}", "start"_a=r.start, "end"_a=r.end,
-                    "padding"_a=m_padding, "sep"_a=m_frame_separator);
+                val = fmt::format("{start:0{padding_start}}{sep}{end:0{padding_end}}", "start"_a=r.start, "end"_a=r.end,
+                    "padding_start"_a=padding_start, "padding_end"_a = padding_end, "sep"_a=m_frame_separator);
             } else {
-                val = fmt::format("{start:-0{padding}}{sep}{end:-0{padding}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
-                    "step"_a=r.step, "padding"_a=m_padding,
+                val = fmt::format("{start:0{padding_start}}{sep}{end:0{padding_end}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
+                    "step"_a=r.step, "padding_start"_a=padding_start, "padding_end"_a = padding_end,
                     "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
             }
             ranges += val + m_range_separator;
@@ -311,11 +321,11 @@ std::string Collection::format(std::string pattern) {
     holes = fmt::format("{}", fmt::join(m_holes, m_range_separator));
 
     return fmt::format(pattern,  
-        "head"_a=head,
-        "tail"_a=tail,
+        "head"_a=m_head,
+        "tail"_a=m_tail,
         "ranges"_a=ranges,
         "global_range"_a=global_range,
-        "padding"_a=padding,
+        "padding"_a=m_padding,
         "holes"_a=holes);
 }
 

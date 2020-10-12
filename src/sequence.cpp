@@ -130,9 +130,9 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 
 // ^(\w.*)%(\d+)d(.*) \[(\d+)\-(\d+)\]$
 // '{head}{padding}{tail} [{ranges}]'
-// @todo parse against multiple patterns
-// @todo refactor to support negative frames: separator can't be  '-'
+// @todo parse against multiple patterns > tricky as regex cannot get named groups, would bring a lot of conditionnal
 // @todo support parsing when step <> 1 i.e. "1:100x2"
+
 // Currently supporting:
 // frame.%04d.exr [1050-1080]
 // frame.###.exr [1050-1080]
@@ -142,8 +142,6 @@ std::tuple<vector<Collection>, vector<std::string>> sequence::assemble(vector<st
 // frame.%03d.exr[1050-1080, 1100, 1105-1110]
 // frame.%03d.exr[1050, 1080, 1090]
 Collection sequence::parse(string entry, string pattern) {
-
-    // vector<string> regex_list;
 
     // @audit how can we use the constants in sequence.h into the regex
     string head_pattern = "([^\\r\\n\\t\\f\\v \\(\\)\\{\\}\\[\\]#]*)";

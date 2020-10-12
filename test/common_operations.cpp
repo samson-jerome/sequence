@@ -131,13 +131,12 @@ TEST_CASE("constructor", "creation") {
    );
    CHECK(res.size() == 0);
 
-   //res = test_collection(
-   //    Collection("head.", ".tail", -1, 5, 4),
-   //    get_mock("head.", ".tail", "head.[-0001:0005].tail", "head. .tail -0001:0005 -0001:0005 4 ",
-   //        7, 4, -1, 5)
-   //);
-   //CHECK(res.size() == 0);
-
+   res = test_collection(
+       Collection("head.", ".tail", -1, 5, 4),
+       get_mock("head.", ".tail", "head.[-0001:0005].tail", "head. .tail -0001:0005 -0001:0005 4 ",
+           7, 4, -1, 5)
+   );
+   CHECK(res.size() == 0);
 
    Collection edited = Collection("head.", ".tail", {10, 11, 12, 13});
    res = test_collection(
@@ -421,12 +420,12 @@ TEST_CASE("Parsing successs with various correct formats", "[parsing]"){
     );
     CHECK(res.size() == 0);
 
-    //res = test_parser(
-    //    "head.###.tail [-2:2]",
-    //    get_mock("head.", ".tail", "head.[-002:002].tail", "head. .tail -002:002 -002:002 3 ",
-    //        5, 3, -2, 2)
-    //);
-    //CHECK(res.size() == 0);
+    res = test_parser(
+        "head.###.tail [-2:2]",
+        get_mock("head.", ".tail", "head.[-002:002].tail", "head. .tail -002:002 -002:002 3 ",
+            5, 3, -2, 2)
+    );
+    CHECK(res.size() == 0);
 
 
     // REQUIRE(sequence::parse("frame.%d.ext [1-10,20-30,40-50]").format() == "frame.[1:10,20:30,40:50].ext");
