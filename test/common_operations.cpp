@@ -131,6 +131,10 @@ TEST_CASE("constructor", "creation") {
    );
    CHECK(res.size() == 0);
 
+   auto c = Collection("head.", ".tail", 1, 5, 4);
+   CHECK(c.getFrame(4) == "head.0004.tail");
+   //CHECK(c.getFrame(90));
+
    //res = test_collection(
    //    Collection("head.", ".tail", -1, 5, 4),
    //    get_mock("head.", ".tail", "head.[-0001:0005].tail", "head. .tail -0001:0005 -0001:0005 4 ",
@@ -187,6 +191,8 @@ TEST_CASE("constructor", "creation") {
    //         0, 0, 0, 0)
    // );
    // CHECK(res.size() == 0);
+
+   CHECK(edited.getFrame(10) == "head.10.tail");
 
    CHECK(edited.lastItem() == "head.13.tail");
 

@@ -22,6 +22,12 @@ using std::endl;
 
 namespace sequence {
 
+    class out_of_range_error : public std::runtime_error {
+    public:
+        out_of_range_error(const std::string msg) : std::runtime_error(msg) {};
+    };
+
+
     /**
      * \brief A contiguous section of frames.
      */
@@ -130,6 +136,7 @@ namespace sequence {
          */
         // std::string format();
         std::string format(std::string pattern = "{head}[{ranges}]{tail}");
+        std::string getFrame(int frame);
         void info();
         // void print(string format="");
         // void print(CollectionFormats format=Format.natural);
