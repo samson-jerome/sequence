@@ -163,7 +163,9 @@ Collection sequence::parse(string entry, string pattern) {
 
     if (regex_search(entry, match, re) && match.size() > 1) {
         string head, tail, range;
-        int num_padding, start, end;
+        int num_padding;
+        int start;
+        int end;
         string d_padding, no_padding, hash_padding, ranges;
         set<int> raw_indexes;
         vector<string> ranges_list;
@@ -213,8 +215,8 @@ Collection sequence::parse(string entry, string pattern) {
                         //    throw parse_exception("invalid range syntax");
 
                         // Range is valid, loop to add all numbers
-                        int start = stoi(r.substr(0, delim_found));
-                        int end = stoi(r.substr(delim_found + 1));
+                        start = stoi(r.substr(0, delim_found));
+                        end = stoi(r.substr(delim_found + 1));
                         for (int i = start; i <= end; i++) {
                             raw_indexes.insert(i);
                         }

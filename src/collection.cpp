@@ -383,6 +383,26 @@ std::string Collection::format(std::string pattern) {
 //         "holes"_a=holes);
 // }
 
+/**
+ * Formats returns a string with information about the current collection
+ * formatted using the desired pattern (default head.[1:10].ext)
+ * \return a string
+*/
+std::string Collection::getFrame(int frame) {
+
+    if (frame < first() && last() < frame) {
+        auto msg = fmt::format("Given frame not in range: {} [{}-{}]",
+            "frame"_a = frame, "first"_a = first(), "last"_a = last());
+        throw out_of_range_error(msg);
+    }
+
+    return fmt::format("{head}{frame:-0{padding}}{tail}",
+        "head"_a=m_head,
+        "tail"_a=m_tail,
+        "frame"_a=frame,
+        "padding"_a=m_padding);
+}
+
 // =============================================================================
 // Structure accessors
 
