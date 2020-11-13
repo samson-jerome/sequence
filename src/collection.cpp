@@ -2,8 +2,15 @@
 
 using namespace sequence;
 
+/**
+ * Default constructor
+ */
 Collection::Collection() {}
 
+/**
+ * Copy constructor
+ * \param Collection reference to a collection
+ */
 Collection::Collection(const sequence::Collection &c) {
     
     for(auto frame : c.m_indices)
@@ -20,15 +27,12 @@ Collection::Collection(const sequence::Collection &c) {
         m_ranges.push_back(range);
 }
 
-//Collection::Collection(const std::string &head, const std::string &tail, const std::vector<int> &indices) 
-//    :m_head(head), m_tail(tail), m_padding(0)
-//{
-//    m_indices = std::set<int> (indices.begin(), indices.end());
-//
-//    this->_findHoles();
-//    this->_separate();
-//}
-
+/**
+ * Constructor
+ * \param head common leading part
+ * \param tail common trailing part
+ * \param indices a set of all indices
+ */
 Collection::Collection(const std::string& head, const std::string& tail, const std::set<int>& indices)
     :m_head(head), m_tail(tail), m_padding(0)
 {
@@ -38,6 +42,13 @@ Collection::Collection(const std::string& head, const std::string& tail, const s
     this->_separate();
 }
 
+/**
+ * Constructor
+ * \param head common leading part
+ * \param tail common trailing part
+ * \param start first frame of the sequence
+ * \param end last frame of the sequence
+ */
 Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end)
     :m_head(head), m_tail(tail), m_padding(0)
 {
@@ -48,15 +59,14 @@ Collection::Collection(const std::string& head, const std::string& tail, const i
     this->_separate();
 }
 
-//Collection::Collection(const std::string &head,const std::string &tail, const std::vector<int> & indices, const int padding)
-//    :m_head(head), m_tail(tail), m_padding(padding)
-//{
-//    m_indices = std::set<int> (indices.begin(), indices.end());
-//
-//    this->_findHoles();
-//    this->_separate();
-//}
 
+/**
+ * Constructor
+ * \param head common leading part
+ * \param tail common trailing part
+ * \param indices a set of all indices
+ * \param padding the padding length
+ */
 Collection::Collection(const std::string& head, const std::string& tail, const std::set<int>& indices, const int padding)
     :m_head(head), m_tail(tail), m_padding(padding)
 {
@@ -66,6 +76,14 @@ Collection::Collection(const std::string& head, const std::string& tail, const s
     this->_separate();
 }
 
+/**
+ * Constructor
+ * \param head common leading part
+ * \param tail common trailing part
+ * \param start first frame of the sequence
+ * \param end last frame of the sequence
+ * \param padding the padding length
+ */
 Collection::Collection(const std::string& head, const std::string& tail, const int start, const int end, const int padding) 
     :m_head(head), m_tail(tail), m_padding(padding)
 {
@@ -80,10 +98,20 @@ Collection::Collection(const std::string& head, const std::string& tail, const i
 // =============================================================================
 // Items accessors
 
+/**
+ * Get the individual name for the first item of the collection
+ * \return Pair of string and bool. The string holds the expanded name if 
+ *  found or an empty string. The boolean indicate a successful search
+ */
 std::string Collection::firstItem() {
     return getItem(*m_indices.begin()).first;
 }
 
+/**
+ * Get the individual name for the last item of the collection
+ * \return Pair of string and bool. The string holds the expanded name if 
+ *  found or an empty string. The boolean indicate a successful search
+ */
 std::string Collection::lastItem() {
     return getItem(*m_indices.rbegin()).first;
 }
@@ -106,7 +134,7 @@ void Collection::removeItem(std::vector<std::string> items_list) {
 
 /**
  * Retrieve an individual name for a given index
- * \param integer value of the frame to retrieve
+ * \param frame value of the frame to retrieve
  * \return Pair of string and bool. The string holds the expanded name if 
  *  found or an empty string. The boolean indicate a successful search
  */
@@ -130,8 +158,8 @@ std::pair<std::string, bool> Collection::getItem(int frame) const{
 
 /**
  * Retrieve an individual name given its position in frames list
- * \param integer value of the index in the collection
- * \return A pair of string and boolean. The string holds the expanded name if
+ * \param index position of the frame in the collection
+ * \return Pair of string and boolean. The string holds the expanded name if
  *  found or an empty string. The boolean indicate a successful search
  */
 std::pair<std::string, bool> Collection::getNthItem(int index) const {
@@ -157,6 +185,11 @@ std::pair<std::string, bool> Collection::getNthItem(int index) const {
 // =============================================================================
 // Frames accessors
 
+/**
+ * Get the first frame value
+ * \return the first indice value of the collection
+ * \throw exception with message: "Empty collection"
+ */
 int Collection::first() {
 	if (m_indices.empty()) {
 		throw "Empty collection";
@@ -164,10 +197,22 @@ int Collection::first() {
     return *(m_indices.begin());
 }
 
+/**
+ * Get the last frame value
+ * \return the last indice value of the collection
+ * \throw exception with message: "Empty collection"
+ */
 int Collection::last() {
+	if (m_indices.empty()) {
+		throw "Empty collection";
+	}
     return *(m_indices.rbegin());
 }
 
+/**
+ * Add a frame to the collection
+ * \param frame the indice value to add
+ */
 void Collection::add(int frame) {
 
     auto ret = m_indices.insert(frame);
@@ -177,6 +222,11 @@ void Collection::add(int frame) {
         this->_separate();
     }
 }
+
+/**
+ * Add multiple frames to the collection
+ * \param frames_list the list of frames to add
+ */
 void Collection::add(std::vector<int> frames_list) { 
 
     // @remind find a way to know if elements were really inserted
@@ -188,12 +238,20 @@ void Collection::add(std::vector<int> frames_list) {
     this->_separate();
 }
 
+/**
+ * Remove a frame from the collection
+ * \param frame the indice value to remove
+ */
 void Collection::remove(int frame) {
     m_indices.erase(frame);
     this->_findHoles();
     this->_separate();
 }
 
+/**
+ * Remove multiple frames from the collection
+ * \param frames_list the list of frames to remove
+ */
 void Collection::remove(std::vector<int> frames_list) {
     for(auto f : frames_list)
         m_indices.erase(f);
@@ -221,7 +279,7 @@ std::vector<std::string> Collection::items() const {
 }
 
 /**
- * Returns the list of frames as a vector of int
+ * Returns the list of frames composing the collection
  * \return a vector of int
  */
 std::vector<int> Collection::frames() const {
@@ -229,22 +287,36 @@ std::vector<int> Collection::frames() const {
     return result;
 }
 
+/**
+ * Returns the list of missing frames in the collection
+ * \return a vector of int
+ */
 std::vector<int> Collection::holes() const {
         return m_holes;
 }
 
+/**
+ * Returns the number of frames composing the collection
+ * \return size of the collection
+ */
 int Collection::count() {
     return m_indices.size();
 }
 
+/**
+ * Remove all frames from the collection
+ */
 void Collection::clear() {
     m_indices.clear();
     m_holes.clear();
     m_ranges.clear();
 }
 
-// TODO update to be similar to print from fmt taking an stream or none to use stdout
+/**
+ * Prints various information about the current collection
+ */
 void Collection::info() {
+    // @todo update to be similar to print from fmt taking an stream or none to use stdout
     std::cout << "Collection construct" << std::endl;
     std::cout << "  head...: " << m_head << std::endl;
     std::cout << "  tail...: " << m_tail << std::endl;
@@ -259,25 +331,28 @@ void Collection::info() {
     std::cout << std::endl;
 }
 
-// void Collection::print(format=CollectionFormats.default) {
-// }
-
-// std::string Collection::format(const std::string &format) {
-//     return format;
-// }
-
 /**
- * Formats returns a string with information about the current collection 
- * formatted using the desired pattern (default head.[1:10].ext)
- * \return a string
+ * \brief Returns a string representation of the current collection 
+ * formatted using the desired pattern.
+ * 
+ * The default pattern is `{head}[{ranges}]{tail}`. Using fmtlib syntax, each 
+ * token will be replaces by its calculated value.
+ * 
+ * The supported tokens are:
+ *  * head: common leading part of the collection
+ *  * tail: common trailing part of the collection
+ *  * padding: integer indicating the collection padding
+ *  * global_range: single range covering the collection, ie: `start:end`
+ *  * ranges: list of all the ranges
+ *  * holes: list of ranges for the missing indices
+ * 
+ * \param pattern A string of the expected formatting
+ * \return String representation of the collection
 */
 std::string Collection::format(std::string pattern) {
     // Note: fmt formatting for integer is "sign-aware" as explained in this thread.
     // https://stackoverflow.com/questions/64305897/using-fmtlib-zero-padded-numerical-value-are-shorter-when-the-value-is-negative/64311447#64311447
-    //fmt::print("{0:0{1}}\n", x, x < 0 ? 5 : 4); // prints -0002 and 0002
 
-    //std::string head= m_head;
-    //std::string tail = m_tail;
     std::string holes= "";
     std::string ranges = "";
     std::string global_range = "";
@@ -289,7 +364,7 @@ std::string Collection::format(std::string pattern) {
         "first"_a = first(),
         "last"_a = last(),
         "sep"_a = m_frame_separator,
-        "padding_first"_a = (first() < 0 ? m_padding+1 : m_padding),
+        "padding_first"_a = (first() < 0 ? m_padding + 1 : m_padding),
         "padding_last"_a= (last() < 0 ? m_padding + 1 : m_padding)
     );
 
@@ -305,12 +380,19 @@ std::string Collection::format(std::string pattern) {
             padding_end = r.end < 0 ? m_padding + 1 : m_padding;
 
             if(r.step == 1){
-                val = fmt::format("{start:0{padding_start}}{sep}{end:0{padding_end}}", "start"_a=r.start, "end"_a=r.end,
-                    "padding_start"_a=padding_start, "padding_end"_a = padding_end, "sep"_a=m_frame_separator);
+                val = fmt::format("{start:0{padding_start}}{sep}{end:0{padding_end}}", 
+                    "start"_a=r.start, "end"_a=r.end,
+                    "padding_start"_a=padding_start, 
+                    "padding_end"_a = padding_end, 
+                    "sep"_a=m_frame_separator
+                );
             } else {
-                val = fmt::format("{start:0{padding_start}}{sep}{end:0{padding_end}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
-                    "step"_a=r.step, "padding_start"_a=padding_start, "padding_end"_a = padding_end,
-                    "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
+                val = fmt::format("{start:0{padding_start}}{sep}{end:0{padding_end}}{step_sep}{step}", 
+                    "start"_a=r.start, "end"_a=r.end, "step"_a=r.step, 
+                    "padding_start"_a=padding_start, 
+                    "padding_end"_a = padding_end,
+                    "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator
+                );
             }
             ranges += val + m_range_separator;
         }
@@ -329,63 +411,9 @@ std::string Collection::format(std::string pattern) {
         "holes"_a=holes);
 }
 
-// /**
-//  * Formats returns a string with information about the current collection 
-//  * formatted using the desired pattern (default head.[1:10].ext)
-//  * \return a string
-// */
-// std::string Collection::format(std::string pattern) {
-//     std::string head= m_head;
-//     std::string tail = m_tail;
-//     std::string holes= "";
-//     std::string ranges = "";
-//     std::string global_range = "";
-//     int padding = m_padding;
-
-//     return "";
-//     // Get global range i.e. "first-last"
-//     global_range = fmt::format("{first:0>{padding}}{sep}{last:0>{padding}}", 
-//         "first"_a=first(),
-//         "last"_a=last(),
-//         "sep"_a=m_frame_separator,
-//         "padding"_a=m_padding
-//     );
-
-//     // Get all range i.e. "1-10" or "1-10,15,20"...
-//     for(Range r : m_ranges){
-//         if(r.isSingleFrame) {
-//             ranges += fmt::format("{index:0>{padding}}", "index"_a=r.start,
-//                 "padding"_a=m_padding) + ",";
-//         } else {
-//             std::string val;
-//             if(r.step == 1){
-//                 val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}", "start"_a=r.start, "end"_a=r.end,
-//                     "padding"_a=m_padding);
-//             } else {
-//                 val = fmt::format("{start:0>{padding}}{sep}{end:0>{padding}}{step_sep}{step}", "start"_a=r.start, "end"_a=r.end,
-//                     "step"_a=r.step, "padding"_a=m_padding,
-//                     "sep"_a=m_frame_separator, "step_sep"_a=m_step_separator);
-//             }
-//             ranges += val + ",";
-//         }
-//     }
-//     ranges.erase(ranges.size() - 1);
-
-//     // Get holes
-//     holes = fmt::format("{}", fmt::join(m_holes, m_range_separator));
-
-//     return fmt::format(pattern,  
-//         "head"_a=head,
-//         "tail"_a=tail,
-//         "ranges"_a=ranges,
-//         "global_range"_a=global_range,
-//         "padding"_a=padding,
-//         "holes"_a=holes);
-// }
-
 /**
- * Formats returns a string with information about the current collection
- * formatted using the desired pattern (default head.[1:10].ext)
+ * Get the full name of a specific frame number
+ * \param int the frame (or indice) number
  * \return a string
 */
 std::string Collection::getFrame(int frame) {
@@ -437,9 +465,10 @@ void Collection::setPadding(int padding) {
 // Protected members
 
 /**
-Updates current collection to recreate the list of missing frames from the list 
-of indices.
-*/
+ * Updates current collection to recreate the list of missing frames from the list 
+ * of existing indices. This is used whenever the indices list changes to keep 
+ * the integrity of the whole Collection.
+ */
 void Collection::_findHoles() {
 
     // @audit Should we consider a global step on a collection and only collect
@@ -461,9 +490,10 @@ void Collection::_findHoles() {
 }
 
 /**
-Updates current collection to recreate the list of ranges from the list of 
-indices.
-*/
+ * Updates current collection to recreate the list of ranges from the list of 
+ * indices. This is used whenever the indices list changes to keep the 
+ * integrity of the whole Collection
+ */
 void Collection::_separate(int minimum_items){
 
     Range r;
@@ -585,5 +615,4 @@ void Collection::_separate(int minimum_items){
         m_ranges.push_back(r);
         // cout << "push range: "<< r.start << "-" << r.end << "-" << r.step << endl; 
     }
-    // }
 }

@@ -107,6 +107,7 @@ TEST_CASE("constructor", "creation") {
 
    // Note: ATM a collection must at least have one frame.
    Collection empty = Collection();
+   REQUIRE_THROWS_WITH(empty.first(), "Empty collection");
    empty.add(1);
 
    res = test_collection(

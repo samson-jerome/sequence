@@ -1,6 +1,6 @@
 #pragma once
 /***
- * \file
+ * \file Collection definition
  */
 
 #ifndef COLLECTION_H
@@ -45,12 +45,12 @@ namespace sequence {
         std::string defaut = "{head}[{ranges}]{tail}";
         std::string rv = "{head}{#}{tail} {ranges}";
         std::string clique = "{head}{#}{tail} {ranges}";
-        std::string percent = "{head}{%d}{tail} {ranges}";
+        std::string printf = "{head}{%d}{tail} {ranges}";
 
     } CollectionFormats;
 
     namespace Format {
-        enum Format {natural, dash, clique, percent};
+        enum Format {natural, dash, clique, printf};
     };
 
     /**
@@ -74,8 +74,8 @@ namespace sequence {
 
         // std::string DEFAULT_FORMAT = "{head}{ranges}{tail}"
         
-        std::set<int> m_indices;    //< set of numerical indexes
-        std::string m_head = "";    //< head part of the collection
+        std::set<int> m_indices;    //!< set of numerical indexes
+        std::string m_head = "";    //!< head part of the collection
         std::string m_tail = "";    //< tail part of the collection
         int m_padding = 0;          //< size of zero-padded indexes
         //std::string m_frame_separator{ sequence::frame_separator };   // @audit verify that we're passing the value and not the address of the original literal
@@ -131,10 +131,6 @@ namespace sequence {
         // std::string toString(const std::string &format=DEFAULT_FORMAT);
         // std::string format(const std::string &format=Collection::DEFAULT_FORMAT);
 
-        /**
-         * \brief Format description
-         */
-        // std::string format();
         std::string format(std::string pattern = "{head}[{ranges}]{tail}");
         std::string getFrame(int frame);
         void info();
