@@ -53,6 +53,7 @@ message(DEBUG "DBG: SEQUENCE_MASTER_PROJECT = ${SEQUENCE_MASTER_PROJECT}")
 
 # build tests and example
 option (SEQUENCE_BUILD_TESTS "Build the tests" ${SEQUENCE_MASTER_PROJECT})
+option (SEQUENCE_BUILD_DOC "Build the docs" ${SEQUENCE_MASTER_PROJECT})
 option (SEQUENCE_BUILD_EXAMPLE "Build example" ${SEQUENCE_MASTER_PROJECT})
 
 # build shared option
@@ -145,6 +146,30 @@ endif()
 if (SEQUENCE_BUILD_EXAMPLE)
     message (STATUS "TODO Generating example(s)")
     # add_subdirectory (example)
+endif()
+
+if (SEQUENCE_BUILD_DOC)
+    message (STATUS "Generating doc")
+
+    find_package(Doxygen REQUIRED)
+
+    # This will be the main output of our command
+    set(DOXYGEN_INDEX_FILE ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html)
+    set(DOXYGEN_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/README.md ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src")
+    set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen)
+    set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in)
+    set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile)
+
+    # Replace variables inside @@ with the current values
+    configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
+
+    file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) # Doxygen won't create this for us
+    add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
+                   COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
+                   MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
+                   COMMENT "Generating docs")
+
+    add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
 endif()
 
 # ---------------------------------------------------------------------
