@@ -75,8 +75,8 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # ---------------------------------------------------------------------
 # Static/Shared library (shared not supported in windows yet)
 # ---------------------------------------------------------------------
-set (SEQUENCE_SRC src/sequence.cpp src/collection.cpp)
-set (SEQUENCE_ALL_HEADERS include/sequence/sequence.h include/sequence/collection.h)
+set (SEQUENCE_SRC src/sequence.cpp src/collection.cpp src/fileutils.cpp)
+set (SEQUENCE_ALL_HEADERS include/sequence/sequence.h include/sequence/collection.h include/sequence/fileutils.h)
 
 if(NOT SEQUENCE_FMT_EXTERNAL AND NOT SEQUENCE_FMT_EXTERNAL_HO)
     message(DEBUG "TODO add bundled fmt")
