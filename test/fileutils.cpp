@@ -2,9 +2,10 @@
 
 #include <string>
 
-#include "sequence/sequence.h"
-#include "sequence/collection.h"
+// #include "tests_utils.h"
 
+#include "sequence/sequence.h"
+#include "sequence/fileutils.h"
 
 using std::cout;
 using std::endl;
@@ -16,7 +17,7 @@ using sequence::parse;
 
 // --------------------------------------------------------------------------
 // 
-TEST_CASE("collection from file", "assemble") {
+TEST_CASE("collection from file", "fileutils") {
 //    vector<sequence::Collection> collections;
 //    vector<std::string> remainders;
 //    vector<std::string> entries;
@@ -31,5 +32,13 @@ TEST_CASE("collection from file", "assemble") {
 //    REQUIRE(remainders.at(1) == "two");
 //    REQUIRE(remainders.at(2) == "three");
 //    REQUIRE(collections.size() == 0);
-    REQUIRE(1==1);
+    std::pair<Collection, bool> result;
+    result = sequence::fileutils::collection_from_file("C:\\dev\\samples\\sample.1.exr");
+    // auto res = test_collection(
+    //     result.first,
+    //     get_mock("sample.", ".exr", "sample.[1:4].exr", "sample. .exr 1:4 1:4 0 ",
+    //         4, 0, 1, 4)
+    // );
+    // CHECK(res.size() == 0);
+    REQUIRE(result.second == true);
 }

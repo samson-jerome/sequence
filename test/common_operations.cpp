@@ -5,7 +5,7 @@
 
 #include "sequence/sequence.h"
 #include "sequence/collection.h"
-
+#include "tests_utils.h"
 
 using std::cout;
 using std::endl;
@@ -40,6 +40,7 @@ MockCollection get_mock(string head, string tail, string format,
 
     return result;
 }
+// struct MockCollection;
 
 vector<string> test_collection(Collection c, MockCollection mock, bool quiet=false) {
 
